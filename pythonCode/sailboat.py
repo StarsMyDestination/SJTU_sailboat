@@ -160,10 +160,9 @@ def main():
                 except UnboundLocalError:
                     pass
     finally:
-        print 222
         dev.close()
         arduinoSer.close()
-        # arduinoSocket.close()
+        print "cleaning up..., dev and serial closed!"
 
 
 if __name__ == '__main__':
