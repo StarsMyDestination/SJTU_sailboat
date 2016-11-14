@@ -1,7 +1,10 @@
 #include <Wire.h>
 
+const float pi = 3.141592653589793;
 int GPSAddress = 0x42;//GPS I2C Address
 String gpsString = "";
+double originLat = 31.0326 / 180.0 * pi, originLon = 121.44162 / 180.0 * pi;
+double listNE[2];
 
 
 double Datatransfer(char *data_buf, char num) //Data type converter：convert char type to float
@@ -46,48 +49,19 @@ void recvInit() {
 }
 
 
-// char headerIsFound(char header[7]) {
-//   char i = 0;
-//   char buff[7];
-//   while (1)
-//   {
-//     recvInit();
-//     while (Wire.available())
-//     {
-//       buff[i] = WireRead();
-//       if (buff[i] == header[i]) //compare with header
-//       {
-//         i++;
-//         if (i == 7)
-//         {
-//           Wire.endTransmission();//end transmission
-//           return 1;
-//         }
-//       }
-//       else
-//         i = 0;
-//     }
-//     Wire.endTransmission();
-//   }
-// }
-
-
 void recvFromGps() {
   gpsString = "";
   boolean headerIsFound = 0;
   while (1) {
     recvInit();
-    while (Wire.available() && !headerIsFound) { 
+    while (Wire.available() && !headerIsFound) { //this while() used for finding header
       gpsString = String((char)Wire.read());
-//      Serial.println(gpsString);
       if (gpsString == "$") {
         headerIsFound = 1;
-//        Serial.println(111);
         break;
       }
     }
     if (headerIsFound) {
-      Serial.println(2222);
       while (Wire.available()) {
         gpsString += (char)Wire.read();
         if (gpsString.endsWith("\r\n")) {
@@ -102,12 +76,26 @@ void recvFromGps() {
 }
 
 
-
 void dataParser() {
 
 }
 
 
+double d2r(double d) {
+  return d / 180.0 * pi;
+}
+
+void w84ToNE(double lat, double lon, double NE[]) {
+  double d_lat = d2r(lat) - originLat;
+  double d_lon = d2r(lon) - originLon;
+  double a = 6378137.0;
+  double e_2 = 6.69437999014e-3;
+  double r1 = a * (1 - e_2) / pow((1 - e_2 * pow(sin(originLat), 2)), 1.5);
+  double r2 = a / sqrt(1 - e_2 * pow(sin(originLat), 2));
+
+  NE[0] = r1 * d_lat;
+  NE[1] = r2 * cos(originLat) * d_lon;
+}
 
 void setup()
 {
@@ -116,12 +104,17 @@ void setup()
   Serial.println("DFRobot DFRduino GPS Shield v1.0");
   Serial.println("$GPGGA statement information: ");
 }
+
 void loop()
 {
-  recvFromGps();
-  Serial.println(gpsString);
-  delay(500);
-//String aa = '$';
-//Serial.println(aa);
-//delay(500);
+  //  recvFromGps();
+  //  Serial.println(gpsString);
+  w84ToNE(31.0326, 121.44169, listNE);
+  Serial.println(listNE[0], 8);
+  Serial.println(listNE[1], 8);
+  delay(1000);
+
+  //String aa = '$';
+  //Serial.println(aa);
+  //delay(500);
 }
