@@ -6,6 +6,9 @@ String gpsString = "";
 double originLat = 31.0326 / 180.0 * pi, originLon = 121.44162 / 180.0 * pi;
 double listNE[2];
 double lat, lon;
+int SVs, FS;
+float HDOP, SOG;
+boolean readFlag;
 
 
 void recvInit() {
@@ -44,7 +47,7 @@ void recvFromGps() {
 }
 
 
-int dataParser() {
+void dataParser() {
   if (gpsString.startsWith("$GPGGA")) {
     int commaIndexList[20] = {0};
     int commaCount = 1;
@@ -52,7 +55,7 @@ int dataParser() {
       int tmpIndex = gpsString.indexOf(',', commaIndexList[commaCount - 1] + 1);
       if (tmpIndex == -1) break;
       commaIndexList[commaCount] = tmpIndex;
-      //      Serial.println(commaIndexList[commaCount]);
+      // Serial.println(commaIndexList[commaCount]);
       commaCount ++;
     }
     // latitude
@@ -71,9 +74,45 @@ int dataParser() {
     Serial.println("latStr: " + lonStr);
     lon = lonStr.toFloat();
     lon = dm2dd(lon);
-    return 1;
+    // FS(Fix Status, 0 no fix; 1 Standard(2D/3D); 2 DGPS)
+    String FSStr = "";
+    for (int i = commaIndexList[6] + 1; i < commaIndexList[7]; i++) {
+    	FSStr += gpsString[i];
+    }
+    FS = FSStr.toInt();
+    // SVs(satellites used, range 0-12)
+    String SVsStr = "";
+    for (int i = commaIndexList[7] + 1; i < commaIndexList[8]; i++) {
+    	SVsStr += gpsString[i];
+    }
+    SVs = SVsStr.toInt();
+    // HDOP(Horizontal Dilution of Precision， range 0.5-99)
+    String HDOPStr = "";
+    for (int i = commaIndexList[8] + 1; i < commaIndexList[9]; i++) {
+    	HDOPStr += gpsString[i];
+    }
+    HDOP = HDOPStr.toFloat();
+    readFlag = 1;
   }
-  else return 0;
+  else if(gpsString.startsWith("$GPVTG")){
+    int commaIndexList[20] = {0};
+    int commaCount = 1;
+    while (1) {
+      int tmpIndex = gpsString.indexOf(',', commaIndexList[commaCount - 1] + 1);
+      if (tmpIndex == -1) break;
+      commaIndexList[commaCount] = tmpIndex;
+      commaCount ++;
+    }
+    // SOG(speed over ground m/s)
+    String SOGStr = "";
+    for (int i = commaIndexList[7] + 1; i < commaIndexList[8]; i++) {
+      SOGStr += gpsString[i];
+    }
+    SOG = SOGStr.toFloat();
+    SOG = SOG/3.6;
+    readFlag = 1;
+  }
+  else readFlag = 0;
 }
 
 
@@ -107,20 +146,28 @@ void setup()
   Serial.begin(115200);
 }
 
-// void test(int a[]) {
-//   a[0] = 100;
-// }
+void dataSend(){
+	Serial.print('#');
+	Serial.print(',');
+	Serial.print(listNE[0], 5);
+	Serial.print(',');
+	Serial.print(listNE[1], 5);
+	Serial.print(',');
+	Serial.print(SVs);
+	Serial.print(',');
+	Serial.print(HDOP);
+	Serial.print(',');
+	Serial.println(SOG);
+}
 
 void loop()
 {
   recvFromGps();
   Serial.println(gpsString);
-  if (dataParser()) {
+  dataParser();
+  if (readFlag) {
     w84ToNE(lat, lon, listNE);
-    Serial.println(lat, 5);
-    Serial.println(lon, 5);
-    Serial.println(listNE[0], 4);
-    Serial.println(listNE[1], 4);
+    dataSend();
   }
   //  char *buff[] = {"A","B"};
   //  *buff[0] = 'A';
@@ -134,5 +181,4 @@ void loop()
   //  String a = "-12.3";
   //  Serial.println(a.toFloat());
   //  delay(500);
-
 }
