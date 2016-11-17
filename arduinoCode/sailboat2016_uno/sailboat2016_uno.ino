@@ -148,10 +148,11 @@ void setup()
 
 void dataSend(){
 	Serial.print('#');
-	Serial.print(',');
 	Serial.print(listNE[0], 5);
 	Serial.print(',');
 	Serial.print(listNE[1], 5);
+	Serial.print(',');
+	Serial.print(FS);
 	Serial.print(',');
 	Serial.print(SVs);
 	Serial.print(',');
