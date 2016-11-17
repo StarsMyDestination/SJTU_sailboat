@@ -1,6 +1,6 @@
 #include <Servo.h>
 #include <FlexiTimer2.h>
-#include <EEPROM.h>
+#define pi 3.141592654;
 //servo configure
 Servo motor, rudder, sail;
 int motorMicroSec = 1500, motorMicroSecOld = 1500;
@@ -38,6 +38,8 @@ float windAngRead = 0; //deg
 double north, east;
 float HDOP, SOG;
 int SVs, FS;
+// AHRS
+float roll, pitch, yaw;
 
 void encoderRead() {
   long int Angle_1 = 0;
@@ -95,11 +97,11 @@ void setup() {
   motor.writeMicroseconds(motorMicroSec);
   rudder.write(rudderAng);
   sail.write(sailAng);
+  Serial.begin(115200);
   Serial1.begin(115200);
   Serial2.begin(115200);
-  Serial3.begin(115200);
-  while (Serial2.available()) Serial2.read(); //clear buff
-  while (Serial3.available()) Serial3.read(); //clear buff
+  Serial1.flush(); //clear buff
+  Serial2.flush(); //clear buff
   durGear = pulseIn(gearPin, HIGH);
   delay(1000);
   FlexiTimer2::set(100, flash);
@@ -133,16 +135,16 @@ unsigned int calcCRC(int data[3])
 void serial1Read() {
   int serialdata[dataNum + 1];
   boolean header_find_flag = false;
-  while (Serial1.available() > (2 * (dataNum + 2) - 1)) Serial1.read(); //clear the buffer(transfer 4bytes data, 7bytes enough for read)
-  while (Serial1.available()) {
-    if ((int)Serial1.read() == 255) {
+  while (Serial.available() > (2 * (dataNum + 2) - 1)) Serial.read(); //clear the buffer(transfer 4bytes data, 7bytes enough for read)
+  while (Serial.available()) {
+    if ((int)Serial.read() == 255) {
       header_find_flag = true;
       break;
     }
   }
-  if (header_find_flag == true && Serial1.available() > dataNum) {
+  if (header_find_flag == true && Serial.available() > dataNum) {
     for (int i = 0; i < (dataNum + 1); i++) {
-      serialdata[i] = (int)Serial1.read();
+      serialdata[i] = (int)Serial.read();
     }
     int Data[dataNum];
     for (int i = 0; i < dataNum; i++) {
@@ -175,8 +177,37 @@ void serial1Read() {
 }
 
 
-void serial2Read() {
-
+void serial2Read() { //used for AHRS
+  unsigned char n[4] = {0}, x[4] = {0}, y[4] = {0}, z[4] = {0};
+  boolean headIsFound = 0;
+  while (Serial1.available() > (2 * 17 - 1)) Serial1.read();
+  while (Serial1.available()) {
+    if ((int)Serial1.read() == 0xFF && (int)Serial1.read() == 0X02) {
+      headIsFound = 1;
+      break;
+    }
+  }
+  while (headIsFound && Serial1.available() > 15) {
+    for (int i = 0; i < 3; i++)
+    {
+      n[i] = Serial1.read();
+    }//three bytes 09 0C 00 after FF 02
+    for (int i = 0; i < 4; i++) {
+      x[i] = Serial1.read();
+    }//read 4-byte angle for x
+    for (int i = 0; i < 4; i++) {
+      y[i] = Serial1.read();
+    }//read 4-byte angle for y
+    for (int i = 0; i < 4; i++) {
+      z[i] = Serial1.read();
+    }//read 4-byte angle for z
+    roll = *((float *)x); //tranfer x 4-byte array to a float num
+    pitch = *((float *)y); //tranfer y 4-byte array to a float num
+    yaw = *((float *)z); //tranfer z 4-byte array to a float num
+    roll = roll * 180 / pi;
+    pitch = pitch * 180 / pi;
+    yaw = yaw * 180 / pi;
+  }
 }
 
 
@@ -185,15 +216,15 @@ void serial3Read() { //for GPS
   String gpsString = "";
   boolean headIsFound = 0;
   boolean endRead = 0;
-  while (Serial3.available()) {
-    inchar = Serial3.read();
+  while (Serial2.available()) {
+    inchar = Serial2.read();
     if (inchar == '#') {
       headIsFound = 1;
       break;
     }
   }
-  while (headIsFound && Serial3.available()) {
-    inchar = (char)Serial3.read();
+  while (headIsFound && Serial2.available()) {
+    inchar = (char)Serial2.read();
     gpsString += inchar;
     if (inchar == '\n') {
       endRead = 1;
@@ -257,31 +288,39 @@ void servoCtrl() {
 
 
 void dataSend() {
-  Serial1.print("#");
-  Serial1.print(",");
-  Serial1.print(motorMicroSec);
-  Serial1.print(",");
-  Serial1.print(rudderAng - 140);
-  Serial1.print(",");
-  Serial1.print(sailAng - 100);
-  Serial1.print(",");
-  Serial1.print(readMark);
-  Serial1.print(",");
-  Serial1.print(autoFlag);
-  Serial1.print(",");
-  Serial1.print(11); //keep for dogvane
-  Serial1.print(",");
-  Serial1.print(22); //keep for sail encoder
-  Serial1.print(",");
-  Serial1.print(33); //keep for ahrs roll
-  Serial1.print(",");
-  Serial1.print(44); //keep for ahrs pitch
-  Serial1.print(",");
-  Serial1.print(55); //keep for ahrs yaw
-  Serial1.print(",");
-  Serial1.print(66); //keep for gps pos.x
-  Serial1.print(",");
-  Serial1.println(77); //keep for gps pos.y
+  Serial.print("#");
+  Serial.print(",");
+  Serial.print(motorMicroSec);
+  Serial.print(",");
+  Serial.print(rudderAng - 140);
+  Serial.print(",");
+  Serial.print(sailAng - 100);
+  Serial.print(",");
+  Serial.print(readMark);
+  Serial.print(",");
+  Serial.print(autoFlag);
+  Serial.print(",");
+  Serial.print(windAngRead); //dogvane angle
+  Serial.print(",");
+  Serial.print(sailAngRead); //sail encoder
+  Serial.print(",");
+  Serial.print(roll); //keep for ahrs roll
+  Serial.print(",");
+  Serial.print(pitch); //keep for ahrs pitch
+  Serial.print(",");
+  Serial.print(yaw); //keep for ahrs yaw
+  Serial.print(",");
+  Serial.print(north); // gps pos.x
+  Serial.print(",");
+  Serial.print(east); // gps pos.y
+  Serial.print(",");
+  Serial.print(FS); // FS(Fix Status, 0 no fix; 1 Standard(2D/3D); 2 DGPS)
+  Serial.print(",");
+  Serial.print(SVs); // SVs(satellites used, range 0-12)
+  Serial.print(",");
+  Serial.print(HDOP); // HDOP(Horizontal Dilution of Precision， range 0.5-99)
+  Serial.print(",");
+  Serial.println(SOG); // SOG(speed over ground m/s)
 }
 
 
