@@ -7,12 +7,12 @@ import serial
 
 
 fst = struct.Struct('!3B')
-arduinoUrl = "socket://192.168.0.101:9000"
+arduinoUrl = "socket://192.168.199.200:9000"
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
 
-dataNum = 12
+dataNum = 17
 
 
 def constraint(num, lowerLimit, upperLimit):
@@ -68,19 +68,24 @@ def dataRead(s):
             return None
         else:
             motorMicroSec = int(ps[1])
-            motorMaxMicroSec = int(ps[2])
-            rudderAng = int(ps[3])
-            voltage = float(ps[4])
-            current = float(ps[5])
-            power = float(ps[6])
-            arduinoReadMark = int(ps[7])
-            maxPower = float(ps[8])
-            powerIsLimited = int(ps[9])
-            autoFlag = int(ps[10])
-            power_f = float(ps[11])
-            return([motorMicroSec, motorMaxMicroSec, rudderAng, voltage,
-                    current, power, arduinoReadMark, maxPower,
-                    powerIsLimited, autoFlag, power_f])
+            rudderAng = int(ps[2])
+            sailAng = int(ps[3])
+            arduinoReadMark = int(ps[4])
+            autoFlag = int(ps[5])
+            windAngRead = float(ps[6])
+            sailAngRead = float(ps[7])
+            roll = float(ps[8])
+            pitch = float(ps[9])
+            yaw = float(ps[10])
+            north = float(ps[11])
+            east = float(ps[12])
+            FS = int(ps[13])
+            SVs = int(ps[14])
+            HDOP = float(ps[15])
+            SOG = float(ps[16])
+            return([motorMicroSec, rudderAng, sailAng, arduinoReadMark,
+                    autoFlag, windAngRead, sailAngRead, roll, pitch, yaw,
+                    north, east, FS, SVs, HDOP, SOG])
     else:
         print 'invalid data'
         return None
@@ -88,16 +93,21 @@ def dataRead(s):
 
 def pubToVeristand(dev, data):
     dev.pub_set1('motorMicroSec', data[0])
-    dev.pub_set1('motorMaxMicroSec', data[1])
-    dev.pub_set1('rudderAng', data[2])
-    dev.pub_set1('voltage', data[3])
-    dev.pub_set1('current', data[4])
-    dev.pub_set1('power', data[5])
-    dev.pub_set1('arduinoReadMark', data[6])
-    dev.pub_set1('maxPower', data[7])
-    dev.pub_set1('powerIsLimited', data[8])
-    dev.pub_set1('autoFlag', data[9])
-    dev.pub_set1('power_f', data[10])
+    dev.pub_set1('rudderAng', data[1])
+    dev.pub_set1('sailAng', data[2])
+    dev.pub_set1('arduinoReadMark', data[3])
+    dev.pub_set1('autoFlag', data[4])
+    dev.pub_set1('windAngRead', data[5])
+    dev.pub_set1('sailAngRead', data[6])
+    dev.pub_set1('roll', data[7])
+    dev.pub_set1('pitch', data[8])
+    dev.pub_set1('yaw', data[9])
+    dev.pub_set1('north', data[10])
+    dev.pub_set1('east', data[11])
+    dev.pub_set1('FS', data[12])
+    dev.pub_set1('SVs', data[13])
+    dev.pub_set1('HDOP', data[14])
+    dev.pub_set1('SOG', data[15])
 
 
 def subFromVeristand(dev):
@@ -153,10 +163,10 @@ def main():
                         dataFromArduino = dataRead(arduinoSer)
                         print dataFromArduino
                 except serial.serialutil.SerialException, e:
-                    arduinoSer.close()                        
+                    arduinoSer.close()
                 try:
                     if dataFromArduino:
-                        pubToVeristand(dev, dataFromArduino)     
+                        pubToVeristand(dev, dataFromArduino)
                 except UnboundLocalError:
                     pass
     finally:
