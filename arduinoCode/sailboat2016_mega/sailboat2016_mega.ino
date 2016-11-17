@@ -34,7 +34,10 @@ const byte DA1 = 24;
 const byte DA2 = 25;
 float sailAngRead = 0; //deg
 float windAngRead = 0; //deg
-
+// gps
+double north, east;
+float HDOP, SOG;
+int SVs, FS;
 
 void encoderRead() {
   long int Angle_1 = 0;
@@ -92,8 +95,11 @@ void setup() {
   motor.writeMicroseconds(motorMicroSec);
   rudder.write(rudderAng);
   sail.write(sailAng);
-  Serial.begin(115200);
-  while (!Serial);
+  Serial1.begin(115200);
+  Serial2.begin(115200);
+  Serial3.begin(115200);
+  while (Serial2.available()) Serial2.read(); //clear buff
+  while (Serial3.available()) Serial3.read(); //clear buff
   durGear = pulseIn(gearPin, HIGH);
   delay(1000);
   FlexiTimer2::set(100, flash);
@@ -124,19 +130,19 @@ unsigned int calcCRC(int data[3])
 }
 
 
-void serialRead() {
+void serial1Read() {
   int serialdata[dataNum + 1];
   boolean header_find_flag = false;
-  while (Serial.available() > (2 * (dataNum + 2) - 1)) Serial.read(); //clear the buffer(transfer 4bytes data, 7bytes enough for read)
-  while (Serial.available()) {
-    if ((int)Serial.read() == 255) {
+  while (Serial1.available() > (2 * (dataNum + 2) - 1)) Serial1.read(); //clear the buffer(transfer 4bytes data, 7bytes enough for read)
+  while (Serial1.available()) {
+    if ((int)Serial1.read() == 255) {
       header_find_flag = true;
       break;
     }
   }
-  if (header_find_flag == true && Serial.available() > dataNum) {
+  if (header_find_flag == true && Serial1.available() > dataNum) {
     for (int i = 0; i < (dataNum + 1); i++) {
-      serialdata[i] = (int)Serial.read();
+      serialdata[i] = (int)Serial1.read();
     }
     int Data[dataNum];
     for (int i = 0; i < dataNum; i++) {
@@ -165,6 +171,50 @@ void serialRead() {
       rudderData = rudderDataOld;
       sailData = sailDataOld;
     }
+  }
+}
+
+
+void serial2Read() {
+
+}
+
+
+void serial3Read() { //for GPS
+  char inchar;
+  String gpsString = "";
+  boolean headIsFound = 0;
+  boolean endRead = 0;
+  while (Serial3.available()) {
+    inchar = Serial3.read();
+    if (inchar == '#') {
+      headIsFound = 1;
+      break;
+    }
+  }
+  while (headIsFound && Serial3.available()) {
+    inchar = (char)Serial3.read();
+    gpsString += inchar;
+    if (inchar == '\n') {
+      endRead = 1;
+      break;
+    }
+  }
+  if (endRead) {
+    String dataStr[6] = {""};
+    int commaCount = 0;
+    for (int i = 0; i < gpsString.length(); i++) {
+      if (gpsString[i] == ',') commaCount ++;
+      else {
+        dataStr[commaCount] += gpsString[i];
+      }
+    }
+    north = dataStr[0].toFloat();
+    east = dataStr[1].toFloat();
+    FS = dataStr[2].toInt();
+    SVs = dataStr[3].toInt();
+    HDOP = dataStr[4].toFloat();
+    SOG = dataStr[5].toFloat();
   }
 }
 
@@ -207,37 +257,39 @@ void servoCtrl() {
 
 
 void dataSend() {
-  Serial.print("#");
-  Serial.print(",");
-  Serial.print(motorMicroSec);
-  Serial.print(",");
-  Serial.print(rudderAng - 140);
-  Serial.print(",");
-  Serial.print(sailAng - 100);
-  Serial.print(",");
-  Serial.print(readMark);
-  Serial.print(",");
-  Serial.print(autoFlag);
-  Serial.print(",");
-  Serial.print(11); //keep for dogvane
-  Serial.print(",");
-  Serial.print(22); //keep for sail encoder
-  Serial.print(",");
-  Serial.print(33); //keep for ahrs roll
-  Serial.print(",");
-  Serial.print(44); //keep for ahrs pitch
-  Serial.print(",");
-  Serial.print(55); //keep for ahrs yaw
-  Serial.print(",");
-  Serial.print(66); //keep for gps pos.x
-  Serial.print(",");
-  Serial.println(77); //keep for gps pos.y
+  Serial1.print("#");
+  Serial1.print(",");
+  Serial1.print(motorMicroSec);
+  Serial1.print(",");
+  Serial1.print(rudderAng - 140);
+  Serial1.print(",");
+  Serial1.print(sailAng - 100);
+  Serial1.print(",");
+  Serial1.print(readMark);
+  Serial1.print(",");
+  Serial1.print(autoFlag);
+  Serial1.print(",");
+  Serial1.print(11); //keep for dogvane
+  Serial1.print(",");
+  Serial1.print(22); //keep for sail encoder
+  Serial1.print(",");
+  Serial1.print(33); //keep for ahrs roll
+  Serial1.print(",");
+  Serial1.print(44); //keep for ahrs pitch
+  Serial1.print(",");
+  Serial1.print(55); //keep for ahrs yaw
+  Serial1.print(",");
+  Serial1.print(66); //keep for gps pos.x
+  Serial1.print(",");
+  Serial1.println(77); //keep for gps pos.y
 }
 
 
 void flash() {
   encoderRead();
-  serialRead();
+  serial1Read();
+  serial2Read(); //for AHRS
+  serial3Read(); //for GPS
   count ++;
   if (count == 10) { //read the gearPin every 10 intervals
     durGear = pulseIn(gearPin, HIGH, 20000);
