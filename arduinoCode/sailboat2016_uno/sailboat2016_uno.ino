@@ -63,7 +63,7 @@ void dataParser() {
     for (int i = commaIndexList[2] + 1; i < commaIndexList[3]; i++) {
       latStr += gpsString[i];
     }
-    Serial.println("latStr: " + latStr);
+//    Serial.println("latStr: " + latStr);
     lat = latStr.toFloat();
     lat = dm2dd(lat);
     // longtitude
@@ -71,7 +71,7 @@ void dataParser() {
     for (int i = commaIndexList[4] + 1; i < commaIndexList[5]; i++) {
       lonStr += gpsString[i];
     }
-    Serial.println("latStr: " + lonStr);
+//    Serial.println("latStr: " + lonStr);
     lon = lonStr.toFloat();
     lon = dm2dd(lon);
     // FS(Fix Status, 0 no fix; 1 Standard(2D/3D); 2 DGPS)
@@ -148,9 +148,9 @@ void setup()
 
 void dataSend(){
 	Serial.print('#');
-	Serial.print(listNE[0], 5);
+	Serial.print(listNE[0], 2);
 	Serial.print(',');
-	Serial.print(listNE[1], 5);
+	Serial.print(listNE[1], 2);
 	Serial.print(',');
 	Serial.print(FS);
 	Serial.print(',');
@@ -164,22 +164,10 @@ void dataSend(){
 void loop()
 {
   recvFromGps();
-  Serial.println(gpsString);
+//  Serial.println(gpsString);
   dataParser();
   if (readFlag) {
     w84ToNE(lat, lon, listNE);
     dataSend();
   }
-  //  char *buff[] = {"A","B"};
-  //  *buff[0] = 'A';
-  //  Serial.println(buff[0]);
-  //  int b[2];
-  //  test(b);
-  //  Serial.println(b[0]);
-  // int *p;
-  // p[0]=1; p[1]=3;
-  // Serial.println(*(p+1));
-  //  String a = "-12.3";
-  //  Serial.println(a.toFloat());
-  //  delay(500);
 }
