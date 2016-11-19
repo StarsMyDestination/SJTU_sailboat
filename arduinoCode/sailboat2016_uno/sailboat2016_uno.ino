@@ -63,7 +63,7 @@ void dataParser() {
     for (int i = commaIndexList[2] + 1; i < commaIndexList[3]; i++) {
       latStr += gpsString[i];
     }
-//    Serial.println("latStr: " + latStr);
+    //    Serial.println("latStr: " + latStr);
     lat = latStr.toFloat();
     lat = dm2dd(lat);
     // longtitude
@@ -71,30 +71,30 @@ void dataParser() {
     for (int i = commaIndexList[4] + 1; i < commaIndexList[5]; i++) {
       lonStr += gpsString[i];
     }
-//    Serial.println("latStr: " + lonStr);
+    //    Serial.println("latStr: " + lonStr);
     lon = lonStr.toFloat();
     lon = dm2dd(lon);
     // FS(Fix Status, 0 no fix; 1 Standard(2D/3D); 2 DGPS)
     String FSStr = "";
     for (int i = commaIndexList[6] + 1; i < commaIndexList[7]; i++) {
-    	FSStr += gpsString[i];
+      FSStr += gpsString[i];
     }
     FS = FSStr.toInt();
     // SVs(satellites used, range 0-12)
     String SVsStr = "";
     for (int i = commaIndexList[7] + 1; i < commaIndexList[8]; i++) {
-    	SVsStr += gpsString[i];
+      SVsStr += gpsString[i];
     }
     SVs = SVsStr.toInt();
     // HDOP(Horizontal Dilution of Precision， range 0.5-99)
     String HDOPStr = "";
     for (int i = commaIndexList[8] + 1; i < commaIndexList[9]; i++) {
-    	HDOPStr += gpsString[i];
+      HDOPStr += gpsString[i];
     }
     HDOP = HDOPStr.toFloat();
     readFlag = 1;
   }
-  else if(gpsString.startsWith("$GPVTG")){
+  else if (gpsString.startsWith("$GPVTG")) {
     int commaIndexList[20] = {0};
     int commaCount = 1;
     while (1) {
@@ -109,7 +109,7 @@ void dataParser() {
       SOGStr += gpsString[i];
     }
     SOG = SOGStr.toFloat();
-    SOG = SOG/3.6;
+    SOG = SOG / 3.6;
     readFlag = 1;
   }
   else readFlag = 0;
@@ -136,7 +136,7 @@ void w84ToNE(double lat, double lon, double NE[]) {
 double dm2dd(double data) {
   double tmp = data / 100.0;
   double d = floor(tmp);
-  double m = 100*(tmp - d);
+  double m = 100 * (tmp - d);
   return d + m / 60.0;
 }
 
@@ -146,25 +146,26 @@ void setup()
   Serial.begin(115200);
 }
 
-void dataSend(){
-	Serial.print('#');
-	Serial.print(listNE[0], 2);
-	Serial.print(',');
-	Serial.print(listNE[1], 2);
-	Serial.print(',');
-	Serial.print(FS);
-	Serial.print(',');
-	Serial.print(SVs);
-	Serial.print(',');
-	Serial.print(HDOP);
-	Serial.print(',');
-	Serial.println(SOG);
+void dataSend() {
+  Serial.print('#');
+  Serial.print(listNE[0], 2);
+  Serial.print(',');
+  Serial.print(listNE[1], 2);
+  Serial.print(',');
+  Serial.print(FS);
+  Serial.print(',');
+  Serial.print(SVs);
+  Serial.print(',');
+  Serial.print(HDOP);
+  Serial.print(',');
+  Serial.println(SOG);
 }
 
 void loop()
 {
   recvFromGps();
-//  Serial.println(gpsString);
+  // Serial.println(gpsString);
+  // Serial.println(123);
   dataParser();
   if (readFlag) {
     w84ToNE(lat, lon, listNE);
