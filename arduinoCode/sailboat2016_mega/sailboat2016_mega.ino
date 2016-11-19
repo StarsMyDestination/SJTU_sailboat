@@ -22,10 +22,10 @@ int count = 0;
 // remote controller duration
 int durGear; // used for control type switch (control type: auto or manual)
 // velocity limit
-int motorVelLimit = 3;
-int rudderVelLimit = 4;
+int motorVelLimit = 20;
+int rudderVelLimit = 6;
 int rudderLimit = 35;
-int sailVelLimit = 4;
+int sailVelLimit = 6;
 int sailLimit = 40;
 // encoder
 const byte CS = 22;
@@ -39,11 +39,39 @@ double north, east;
 float HDOP, SOG;
 int SVs, FS;
 // AHRS
-float roll, pitch, yaw;
+float roll, pitch, yaw, rollOld, pitchOld, yawOld;
+
+
+void setup() {
+  motor.attach(9, 1100, 1900);  // attaches the servo on pin 9 to the servo object
+  rudder.attach(10, 1100, 1900);
+  sail.attach(11, 1100, 1900);
+  pinMode(elevPin, INPUT);
+  pinMode(throPin, INPUT);
+  pinMode(ruddPin, INPUT);
+  pinMode(gearPin, INPUT);
+  pinMode(CS, OUTPUT);
+  pinMode(CL, OUTPUT);
+  pinMode(DA1, INPUT);
+  pinMode(DA2, INPUT);
+  motor.writeMicroseconds(motorMicroSec);
+  rudder.write(rudderAng);
+  sail.write(sailAng);
+  Serial.begin(115200);
+  Serial1.begin(115200);
+  Serial2.begin(115200);
+  Serial1.flush(); //clear buff
+  Serial2.flush(); //clear buff
+  durGear = pulseIn(gearPin, HIGH);
+  delay(1000);
+  FlexiTimer2::set(100, flash);
+  FlexiTimer2::start();
+}
+
 
 void encoderRead() {
-  long int Angle_1 = 0;
-  long int Angle_2 = 0;
+  long Angle_1 = 0;
+  long Angle_2 = 0;
   int Angle_1_data = 0;
   int Angle_2_data = 0;
   digitalWrite(CS, LOW);
@@ -61,11 +89,11 @@ void encoderRead() {
   digitalWrite(CS, HIGH);
   int Angle_1_Status = 0x003F & Angle_1;
   int Angle_2_Status = 0x003F & Angle_2;
-  if ((Angle_1_Status >> 1) == 16 | (Angle_1_Status >> 1) == 19) { // 16=10000B,19=10011B
+  if ((Angle_1_Status >> 1) == 16 || (Angle_1_Status >> 1) == 19) { // 16=10000B,19=10011B
     Angle_1_data = Angle_1 >> 6;
   }
   else  Angle_1_data = 0;
-  if ((Angle_2_Status >> 1) == 16 | (Angle_2_Status >> 1) == 19) { // 16=10000B,19=10011B
+  if ((Angle_2_Status >> 1) == 16 || (Angle_2_Status >> 1) == 19) { // 16=10000B,19=10011B
     Angle_2_data = Angle_2 >> 6;
   }
   else  Angle_2_data = 0;
@@ -75,7 +103,6 @@ void encoderRead() {
 
 float Angle_Cal(int data, float Offset) {
   float Ang_data = data * 360.0 / 1024.0;
-
   if (data != 0) {
     if (Ang_data > 180) {
       Ang_data = Ang_data - 360;
@@ -83,29 +110,6 @@ float Angle_Cal(int data, float Offset) {
     Ang_data = Ang_data - Offset;
   }
   return Ang_data;
-}
-
-
-void setup() {
-  motor.attach(9, 1100, 1900);  // attaches the servo on pin 9 to the servo object
-  rudder.attach(10, 1100, 1900);
-  sail.attach(11, 1100, 1900);
-  pinMode(elevPin, INPUT);
-  pinMode(throPin, INPUT);
-  pinMode(ruddPin, INPUT);
-  pinMode(gearPin, INPUT);
-  motor.writeMicroseconds(motorMicroSec);
-  rudder.write(rudderAng);
-  sail.write(sailAng);
-  Serial.begin(115200);
-  Serial1.begin(115200);
-  Serial2.begin(115200);
-  Serial1.flush(); //clear buff
-  Serial2.flush(); //clear buff
-  durGear = pulseIn(gearPin, HIGH);
-  delay(1000);
-  FlexiTimer2::set(100, flash);
-  FlexiTimer2::start();
 }
 
 
@@ -178,7 +182,7 @@ void serial1Read() {
 
 
 void serial2Read() { //used for AHRS
-  unsigned char n[4] = {0}, x[4] = {0}, y[4] = {0}, z[4] = {0};
+  unsigned char n[3] = {0}, x[4] = {0}, y[4] = {0}, z[4] = {0}, crc[2] = {0}, crcfield[15];
   boolean headIsFound = 0;
   while (Serial1.available() > (2 * 17 - 1)) Serial1.read();
   while (Serial1.available()) {
@@ -191,23 +195,64 @@ void serial2Read() { //used for AHRS
     for (int i = 0; i < 3; i++)
     {
       n[i] = Serial1.read();
+      crcfield[i] = n[i];
     }//three bytes 09 0C 00 after FF 02
     for (int i = 0; i < 4; i++) {
       x[i] = Serial1.read();
+      crcfield[i + 3] = x[i];
     }//read 4-byte angle for x
     for (int i = 0; i < 4; i++) {
       y[i] = Serial1.read();
+      crcfield[i + 7] = y[i];
     }//read 4-byte angle for y
     for (int i = 0; i < 4; i++) {
       z[i] = Serial1.read();
+      crcfield[i + 11] = z[i];
     }//read 4-byte angle for z
-    roll = *((float *)x); //tranfer x 4-byte array to a float num
-    pitch = *((float *)y); //tranfer y 4-byte array to a float num
-    yaw = *((float *)z); //tranfer z 4-byte array to a float num
-    roll = roll * 180 / pi;
-    pitch = pitch * 180 / pi;
-    yaw = yaw * 180 / pi;
+    for (int i = 0; i < 2; i++) {
+      crc[i] = Serial1.read();
+    }
+    if (ahrsCRC(crcfield, 15) == (int)crc[0] << 8 | (int)crc[1])
+    {
+      roll = *((float *)x); //tranfer x 4-byte array to a float num
+      pitch = *((float *)y); //tranfer y 4-byte array to a float num
+      yaw = *((float *)z); //tranfer z 4-byte array to a float num
+      roll = roll * 180 / pi;
+      pitch = pitch * 180 / pi;
+      yaw = yaw * 180 / pi;
+      rollOld = roll;
+      pitchOld = pitch;
+      yawOld = yaw;
+    }
+    else {
+      roll = rollOld;
+      pitch = pitchOld;
+      yaw = yawOld;
+    }
   }
+}
+
+unsigned int ahrsCRC(const byte *pBuffer, unsigned int bufferSize)
+{
+  unsigned int poly = 0x8408;
+  unsigned int crc = 0;
+  byte carry;
+  byte i_bits;
+  unsigned int j;
+  for (j = 0; j < bufferSize; j++)
+  {
+    crc = crc ^ pBuffer[j];
+    for (i_bits = 0; i_bits < 8; i_bits++)
+    {
+      carry = crc & 1;
+      crc = crc / 2;
+      if (carry)
+      {
+        crc = crc ^ poly;
+      }
+    }
+  }
+  return crc;
 }
 
 
@@ -281,8 +326,8 @@ void servoCtrl() {
   rudderAngOld = rudderAng = constrain(rudderAng, 140 - rudderLimit, 140 + rudderLimit);
   sailAngOld = sailAng = constrain(sailAng, 140 - sailLimit, 140 + sailLimit);
   motor.writeMicroseconds(motorMicroSec);
-  // int rudderAngReverse = map(rudderAng, 100, 180, 180, 100); //reverse the rudder signal
-  rudder.write(rudderAng);
+  int rudderAngReverse = map(rudderAng, 100, 180, 180, 100); //reverse the rudder signal
+  rudder.write(rudderAngReverse);
   sail.write(sailAng);
 }
 
