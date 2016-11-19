@@ -7,7 +7,7 @@ import serial
 
 
 fst = struct.Struct('!3B')
-arduinoUrl = "socket://192.168.199.200:9000"
+arduinoUrl = "socket://192.168.188.200:9000"
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
@@ -67,25 +67,29 @@ def dataRead(s):
             print tmp
             return None
         else:
-            motorMicroSec = int(ps[1])
-            rudderAng = int(ps[2])
-            sailAng = int(ps[3])
-            arduinoReadMark = int(ps[4])
-            autoFlag = int(ps[5])
-            windAngRead = float(ps[6])
-            sailAngRead = float(ps[7])
-            roll = float(ps[8])
-            pitch = float(ps[9])
-            yaw = float(ps[10])
-            north = float(ps[11])
-            east = float(ps[12])
-            FS = int(ps[13])
-            SVs = int(ps[14])
-            HDOP = float(ps[15])
-            SOG = float(ps[16])
-            return([motorMicroSec, rudderAng, sailAng, arduinoReadMark,
-                    autoFlag, windAngRead, sailAngRead, roll, pitch, yaw,
-                    north, east, FS, SVs, HDOP, SOG])
+            try:
+                motorMicroSec = int(ps[1])
+                rudderAng = int(ps[2])
+                sailAng = int(ps[3])
+                arduinoReadMark = int(ps[4])
+                autoFlag = int(ps[5])
+                windAngRead = float(ps[6])
+                sailAngRead = float(ps[7])
+                roll = float(ps[8])
+                pitch = float(ps[9])
+                yaw = float(ps[10])
+                north = float(ps[11])
+                east = float(ps[12])
+                FS = int(ps[13])
+                SVs = int(ps[14])
+                HDOP = float(ps[15])
+                SOG = float(ps[16])
+                return([motorMicroSec, rudderAng, sailAng, arduinoReadMark,
+                        autoFlag, windAngRead, sailAngRead, roll, pitch, yaw,
+                        north, east, FS, SVs, HDOP, SOG])
+            except Exception, e:
+                print "data read from Arduino error", e
+                return None
     else:
         print 'invalid data'
         return None
