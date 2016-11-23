@@ -78,15 +78,16 @@ def dataRead(s):
                 roll = float(ps[8])
                 pitch = float(ps[9])
                 yaw = float(ps[10])
-                north = float(ps[11])
-                east = float(ps[12])
-                FS = int(ps[13])
-                SVs = int(ps[14])
-                HDOP = float(ps[15])
-                SOG = float(ps[16])
+                utc = float(ps[11])
+                north = float(ps[12])
+                east = float(ps[13])
+                FS = int(ps[14])
+                SVs = int(ps[15])
+                HDOP = float(ps[16])
+                SOG = float(ps[17])
                 return([motorMicroSec, rudderAng, sailAng, arduinoReadMark,
                         autoFlag, windAngRead, sailAngRead, roll, pitch, yaw,
-                        north, east, FS, SVs, HDOP, SOG])
+                        utc, north, east, FS, SVs, HDOP, SOG])
             except Exception, e:
                 print "data read from Arduino error", e
                 return None
