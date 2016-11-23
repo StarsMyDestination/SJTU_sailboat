@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <FlexiTimer2.h>
 
 const float pi = 3.141592653589793;
 int GPSAddress = 0x42;//GPS I2C Address
@@ -7,7 +8,7 @@ double originLat = 31.0326 / 180.0 * pi, originLon = 121.44162 / 180.0 * pi;
 double listNE[2];
 double lat, lon;
 int SVs, FS;
-float HDOP, SOG;
+float HDOP, SOG, UTC;
 boolean readFlag;
 
 
@@ -58,6 +59,12 @@ void dataParser() {
       // Serial.println(commaIndexList[commaCount]);
       commaCount ++;
     }
+    //UTC
+    String UTCStr = "";
+    for (int i = commaIndexList[1] + 1; i < commaIndexList[2]; i++) {
+      UTCStr += gpsString[i];
+    }
+    UTC = UTCStr.toFloat();
     // latitude
     String latStr = "";
     for (int i = commaIndexList[2] + 1; i < commaIndexList[3]; i++) {
@@ -144,10 +151,15 @@ void setup()
 {
   Wire.begin();
   Serial.begin(115200);
+  FlexiTimer2::set(100, flash);
+  FlexiTimer2::start();
 }
 
 void dataSend() {
-  Serial.print('#');
+  Serial.print("#@");
+  Serial.print(',');
+  Serial.print(UTC);
+  Serial.print(',');
   Serial.print(listNE[0], 2);
   Serial.print(',');
   Serial.print(listNE[1], 2);
@@ -158,17 +170,21 @@ void dataSend() {
   Serial.print(',');
   Serial.print(HDOP);
   Serial.print(',');
-  Serial.println(SOG);
+  Serial.print(SOG);
+  Serial.print(',');
+  Serial.print("$*\n");
+}
+
+void flash() {
+  dataSend();
 }
 
 void loop()
 {
   recvFromGps();
   // Serial.println(gpsString);
-  // Serial.println(123);
   dataParser();
   if (readFlag) {
     w84ToNE(lat, lon, listNE);
-    dataSend();
   }
 }
