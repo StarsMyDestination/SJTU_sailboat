@@ -36,7 +36,7 @@ float sailAngRead = 0; //deg
 float windAngRead = 0; //deg
 // gps
 double north, east;
-float HDOP, SOG;
+float HDOP, SOG, UTC;
 int SVs, FS;
 // AHRS
 float roll, pitch, yaw, rollOld, pitchOld, yawOld;
@@ -57,13 +57,13 @@ void setup() {
   motor.writeMicroseconds(motorMicroSec);
   rudder.write(rudderAng);
   sail.write(sailAng);
+  delay(1000);
   Serial.begin(115200);
   Serial1.begin(115200);
   Serial2.begin(115200);
   Serial1.flush(); //clear buff
   Serial2.flush(); //clear buff
   durGear = pulseIn(gearPin, HIGH);
-  delay(1000);
   FlexiTimer2::set(100, flash);
   FlexiTimer2::start();
 }
@@ -256,28 +256,14 @@ unsigned int ahrsCRC(const byte *pBuffer, unsigned int bufferSize)
 }
 
 
-void serial3Read() { //for GPS
-  char inchar;
+void serial3Read() {
   String gpsString = "";
-  boolean headIsFound = 0;
-  boolean endRead = 0;
   while (Serial2.available()) {
-    inchar = Serial2.read();
-    if (inchar == '#') {
-      headIsFound = 1;
-      break;
-    }
-  }
-  while (headIsFound && Serial2.available()) {
-    inchar = (char)Serial2.read();
+    char inchar = Serial2.read();
     gpsString += inchar;
-    if (inchar == '\n') {
-      endRead = 1;
-      break;
-    }
   }
-  if (endRead) {
-    String dataStr[6] = {""};
+  if (gpsString.startsWith("#@") && gpsString.endsWith("$*\n")) {
+    String dataStr[9] = {""};
     int commaCount = 0;
     for (int i = 0; i < gpsString.length(); i++) {
       if (gpsString[i] == ',') commaCount ++;
@@ -285,12 +271,16 @@ void serial3Read() { //for GPS
         dataStr[commaCount] += gpsString[i];
       }
     }
-    north = dataStr[0].toFloat();
-    east = dataStr[1].toFloat();
-    FS = dataStr[2].toInt();
-    SVs = dataStr[3].toInt();
-    HDOP = dataStr[4].toFloat();
-    SOG = dataStr[5].toFloat();
+//    Serial.println(gpsString);
+    if (commaCount == 8) {
+      UTC = dataStr[1].toFloat();
+      north = dataStr[2].toFloat();
+      east = dataStr[3].toFloat();
+      FS = dataStr[4].toInt();
+      SVs = dataStr[5].toInt();
+      HDOP = dataStr[6].toFloat();
+      SOG = dataStr[7].toFloat();
+    }
   }
 }
 
@@ -355,6 +345,8 @@ void dataSend() {
   Serial.print(",");
   Serial.print(yaw); //keep for ahrs yaw
   Serial.print(",");
+  Serial.print(UTC); // gps pos.x
+  Serial.print(",");
   Serial.print(north); // gps pos.x
   Serial.print(",");
   Serial.print(east); // gps pos.y
@@ -370,10 +362,6 @@ void dataSend() {
 
 
 void flash() {
-  encoderRead();
-  serial1Read();
-  serial2Read(); //for AHRS
-  serial3Read(); //for GPS
   count ++;
   if (count == 10) { //read the gearPin every 10 intervals
     durGear = pulseIn(gearPin, HIGH, 20000);
@@ -392,4 +380,8 @@ void flash() {
 }
 
 void loop() {
+  encoderRead();
+  serial1Read();
+  serial2Read(); //for AHRS
+  serial3Read(); //for GPS
 }
