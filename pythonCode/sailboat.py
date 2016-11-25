@@ -12,7 +12,10 @@ arduinoUrl = "socket://192.168.188.200:9000"
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
 
-dataNum = 17
+dataNum = 18
+sailOffset = -43
+windOffset = 105
+
 
 
 def constraint(num, lowerLimit, upperLimit):
@@ -58,6 +61,7 @@ def dataRead(s):
         tmp = s.recv(1024)
     except(AttributeError):
         tmp = s.readline()
+        # print tmp
     if tmp.startswith('#') and tmp.endswith('\n'):
         tmp = tmp.rstrip('\n')
         ps = tmp.split(',')
@@ -95,6 +99,12 @@ def dataRead(s):
         print 'invalid data'
         return None
 
+def to180(data):
+    if data < -180:
+        data = data+360
+    elif data > 180:
+        data = data-360
+    return data
 
 def pubToVeristand(dev, data):
     dev.pub_set1('motorMicroSec', data[0])
@@ -102,17 +112,18 @@ def pubToVeristand(dev, data):
     dev.pub_set1('sailAng', data[2])
     dev.pub_set1('arduinoReadMark', data[3])
     dev.pub_set1('autoFlag', data[4])
-    dev.pub_set1('windAngRead', data[5])
-    dev.pub_set1('sailAngRead', data[6])
+    dev.pub_set1('windAngRead', to180(data[5]-windOffset))
+    dev.pub_set1('sailAngRead', to180(data[6]-sailOffset))
     dev.pub_set1('roll', data[7])
     dev.pub_set1('pitch', data[8])
     dev.pub_set1('yaw', data[9])
-    dev.pub_set1('north', data[10])
-    dev.pub_set1('east', data[11])
-    dev.pub_set1('FS', data[12])
-    dev.pub_set1('SVs', data[13])
-    dev.pub_set1('HDOP', data[14])
-    dev.pub_set1('SOG', data[15])
+    dev.pub_set1('UTC', data[10]) 
+    dev.pub_set1('north', data[11])
+    dev.pub_set1('east', data[12])
+    dev.pub_set1('FS', data[13])
+    dev.pub_set1('SVs', data[14])
+    dev.pub_set1('HDOP', data[15])
+    dev.pub_set1('SOG', data[16])
 
 
 def subFromVeristand(dev):
