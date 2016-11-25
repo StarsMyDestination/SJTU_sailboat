@@ -155,6 +155,19 @@ void setup()
   FlexiTimer2::start();
 }
 
+
+struct 
+{
+  float UTC;
+  float north;
+  float east;
+  int FS;
+  int SVs;
+  float HDOP;
+  float SOG;
+}gpsData;
+
+
 void dataSend() {
   Serial.print("#@");
   Serial.print(',');
