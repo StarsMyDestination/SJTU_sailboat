@@ -156,7 +156,7 @@ void setup()
 }
 
 
-struct 
+struct
 {
   float UTC;
   float north;
@@ -165,10 +165,10 @@ struct
   int SVs;
   float HDOP;
   float SOG;
-}gpsData;
+} gpsData;
 
 
-void dataAssignTest(){
+void dataAssignTest() {
   gpsData.UTC = 123.324;
   gpsData.north = 3243.5464;
   gpsData.east = 57849.4231;
@@ -178,7 +178,7 @@ void dataAssignTest(){
   gpsData.SOG = 0.123;
 }
 
-void structDataSend(){
+void structDataSend() {
   byte *tobyte = (byte*)&gpsData;
   Serial.write(tobyte, sizeof(gpsData));
 };
@@ -206,7 +206,10 @@ void dataSend() {
 }
 
 void flash() {
-  dataSend();
+  //  dataSend();
+  dataAssignTest();
+  structDataSend();
+//  Serial.println(sizeof(gpsData));
 }
 
 void loop()
@@ -217,7 +220,6 @@ void loop()
   // if (readFlag) {
   //   w84ToNE(lat, lon, listNE);
   // }
-  dataAssignTest();
-  structDataSend();
-  
+
+//  delay(500);
 }
