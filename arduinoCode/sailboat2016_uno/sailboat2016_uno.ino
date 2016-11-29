@@ -187,11 +187,11 @@ unsigned int crc16(const byte *pBuffer, unsigned int bufferSize) {
 }
 
 void structDataSend() {
-//  Serial.println(sizeof(gpsData));
+  //  Serial.println(sizeof(gpsData));
   byte *tobyte = (byte*)&gpsData;
-  gpsData.crcnum = crc16(tobyte, sizeof(gpsData) - 2);
+  gpsData.crcnum = crc16(tobyte + 2, sizeof(gpsData) - 4); //the valid data part as used to generate crc
   Serial.write(tobyte, sizeof(gpsData));
-};
+}
 
 
 void setup()

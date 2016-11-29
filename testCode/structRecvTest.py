@@ -26,9 +26,12 @@ def dataRead(s):
     # print 111
     tmp = s.read(numBytes)
     # print type(tmp)
+    # print (tmp.find(header))
     if (tmp.find(header)) == 0 and len(tmp) == numBytes:
-        crc16Num = crc16(tmp[:-2])
+        crc16Num = crc16(tmp[2:-2])
+        # print crc16Num
         gpsDatas = fst.unpack(tmp)
+        # print gpsDatas[-1]
         if gpsDatas[-1] == crc16Num:
             EGpsData = gpsDatas[1:-1]
             print EGpsData
