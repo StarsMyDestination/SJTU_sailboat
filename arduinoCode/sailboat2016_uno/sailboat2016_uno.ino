@@ -5,11 +5,23 @@ const float pi = 3.141592653589793;
 int GPSAddress = 0x42;//GPS I2C Address
 String gpsString = "";
 double originLat = 31.0326 / 180.0 * pi, originLon = 121.44162 / 180.0 * pi;
-double listNE[2];
 double lat, lon;
-int SVs, FS;
-float HDOP, SOG, UTC;
 boolean readFlag;
+
+
+struct
+{
+  byte header1;
+  byte header2;
+  float UTC;
+  float north;
+  float east;
+  int FS;
+  int SVs;
+  float HDOP;
+  float SOG;
+  unsigned int crcnum;
+} gpsData = {0};
 
 
 void recvInit() {
@@ -64,7 +76,7 @@ void dataParser() {
     for (int i = commaIndexList[1] + 1; i < commaIndexList[2]; i++) {
       UTCStr += gpsString[i];
     }
-    UTC = UTCStr.toFloat();
+    gpsData.UTC = UTCStr.toFloat();
     // latitude
     String latStr = "";
     for (int i = commaIndexList[2] + 1; i < commaIndexList[3]; i++) {
@@ -86,19 +98,19 @@ void dataParser() {
     for (int i = commaIndexList[6] + 1; i < commaIndexList[7]; i++) {
       FSStr += gpsString[i];
     }
-    FS = FSStr.toInt();
+    gpsData.FS = FSStr.toInt();
     // SVs(satellites used, range 0-12)
     String SVsStr = "";
     for (int i = commaIndexList[7] + 1; i < commaIndexList[8]; i++) {
       SVsStr += gpsString[i];
     }
-    SVs = SVsStr.toInt();
+    gpsData.SVs = SVsStr.toInt();
     // HDOP(Horizontal Dilution of Precision， range 0.5-99)
     String HDOPStr = "";
     for (int i = commaIndexList[8] + 1; i < commaIndexList[9]; i++) {
       HDOPStr += gpsString[i];
     }
-    HDOP = HDOPStr.toFloat();
+    gpsData.HDOP = HDOPStr.toFloat();
     readFlag = 1;
   }
   else if (gpsString.startsWith("$GPVTG")) {
@@ -115,8 +127,7 @@ void dataParser() {
     for (int i = commaIndexList[7] + 1; i < commaIndexList[8]; i++) {
       SOGStr += gpsString[i];
     }
-    SOG = SOGStr.toFloat();
-    SOG = SOG / 3.6;
+    gpsData.SOG = SOGStr.toFloat() / 3.6;
     readFlag = 1;
   }
   else readFlag = 0;
@@ -127,7 +138,7 @@ double d2r(double d) {
   return d / 180.0 * pi;
 }
 
-void w84ToNE(double lat, double lon, double NE[]) {
+void w84ToNE(double lat, double lon) {
   double d_lat = d2r(lat) - originLat;
   double d_lon = d2r(lon) - originLon;
   double a = 6378137.0;
@@ -135,8 +146,8 @@ void w84ToNE(double lat, double lon, double NE[]) {
   double r1 = a * (1 - e_2) / pow((1 - e_2 * pow(sin(originLat), 2)), 1.5);
   double r2 = a / sqrt(1 - e_2 * pow(sin(originLat), 2));
 
-  NE[0] = r1 * d_lat;
-  NE[1] = r2 * cos(originLat) * d_lon;
+  gpsData.north = r1 * d_lat;
+  gpsData.east = r2 * cos(originLat) * d_lon;
 }
 
 
@@ -146,27 +157,6 @@ double dm2dd(double data) {
   double m = 100 * (tmp - d);
   return d + m / 60.0;
 }
-
-void setup()
-{
-  Wire.begin();
-  Serial.begin(115200);
-  FlexiTimer2::set(100, flash);
-  FlexiTimer2::start();
-}
-
-
-struct
-{
-  float UTC;
-  float north;
-  float east;
-  int FS;
-  int SVs;
-  float HDOP;
-  float SOG;
-} gpsData;
-
 
 void dataAssignTest() {
   gpsData.UTC = 123.324;
@@ -178,48 +168,53 @@ void dataAssignTest() {
   gpsData.SOG = 0.123;
 }
 
+unsigned int crc16(const byte *pBuffer, unsigned int bufferSize) {
+  unsigned int poly = 0x8408;
+  unsigned int crc = 0x0;
+  byte carry;
+  byte i_bits;
+  unsigned int j;
+  for (j = 0; j < bufferSize; j++) {
+    crc = crc ^ pBuffer[j];
+    for (i_bits = 0; i_bits < 8; i_bits++) {
+      carry = crc & 1;
+      crc = crc / 2;
+      if (carry)
+        crc = crc ^ poly;
+    }
+  }
+  return crc;
+}
+
 void structDataSend() {
+//  Serial.println(sizeof(gpsData));
   byte *tobyte = (byte*)&gpsData;
+  gpsData.crcnum = crc16(tobyte, sizeof(gpsData) - 2);
   Serial.write(tobyte, sizeof(gpsData));
 };
 
 
-
-void dataSend() {
-  Serial.print("#@");
-  Serial.print(',');
-  Serial.print(UTC);
-  Serial.print(',');
-  Serial.print(listNE[0], 2);
-  Serial.print(',');
-  Serial.print(listNE[1], 2);
-  Serial.print(',');
-  Serial.print(FS);
-  Serial.print(',');
-  Serial.print(SVs);
-  Serial.print(',');
-  Serial.print(HDOP);
-  Serial.print(',');
-  Serial.print(SOG);
-  Serial.print(',');
-  Serial.print("$*\n");
+void setup()
+{
+  Wire.begin();
+  Serial.begin(115200);
+  gpsData.header1 = 0x4f;
+  gpsData.header2 = 0x5e;
+  FlexiTimer2::set(100, flash);
+  FlexiTimer2::start();
 }
 
 void flash() {
-  //  dataSend();
   dataAssignTest();
   structDataSend();
-//  Serial.println(sizeof(gpsData));
 }
 
 void loop()
 {
-  // recvFromGps();
-  // // Serial.println(gpsString);
-  // dataParser();
-  // if (readFlag) {
-  //   w84ToNE(lat, lon, listNE);
-  // }
-
-//  delay(500);
+  //  recvFromGps();
+  //  // Serial.println(gpsString);
+  //  dataParser();
+  //  if (readFlag) {
+  //    w84ToNE(lat, lon);
+  //  }
 }
