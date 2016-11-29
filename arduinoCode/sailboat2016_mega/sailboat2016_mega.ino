@@ -184,14 +184,15 @@ void serial1Read() {
 void serial2Read() { //used for AHRS
   unsigned char n[3] = {0}, x[4] = {0}, y[4] = {0}, z[4] = {0}, crc[2] = {0}, crcfield[15];
   boolean headIsFound = 0;
-  while (Serial1.available() > (2 * 17 - 1)) Serial1.read();
+  unsigned int crcResult, crcKey;
+  while (Serial1.available() > (2 * 19 - 1)) Serial1.read();
   while (Serial1.available()) {
     if ((int)Serial1.read() == 0xFF && (int)Serial1.read() == 0X02) {
       headIsFound = 1;
       break;
     }
   }
-  while (headIsFound && Serial1.available() > 15) {
+  while (headIsFound && Serial1.available() > 17) {
     for (int i = 0; i < 3; i++)
     {
       n[i] = Serial1.read();
@@ -212,19 +213,22 @@ void serial2Read() { //used for AHRS
     for (int i = 0; i < 2; i++) {
       crc[i] = Serial1.read();
     }
-    if (ahrsCRC(crcfield, 15) == (int)crc[0] << 8 | (int)crc[1])
+    roll = *((float *)x); //tranfer x 4-byte array to a float num
+    pitch = *((float *)y); //tranfer y 4-byte array to a float num
+    yaw = *((float *)z); //tranfer z 4-byte array to a float num
+    roll = roll * 180 / pi;
+    pitch = pitch * 180 / pi;
+    yaw = yaw * 180 / pi;
+    crcResult = ahrsCRC(crcfield, 15);
+    crcKey = (int)crc[0] << 8 | (int)crc[1];
+    if (crcResult == crcKey)
     {
-      roll = *((float *)x); //tranfer x 4-byte array to a float num
-      pitch = *((float *)y); //tranfer y 4-byte array to a float num
-      yaw = *((float *)z); //tranfer z 4-byte array to a float num
-      roll = roll * 180 / pi;
-      pitch = pitch * 180 / pi;
-      yaw = yaw * 180 / pi;
       rollOld = roll;
       pitchOld = pitch;
       yawOld = yaw;
     }
     else {
+
       roll = rollOld;
       pitch = pitchOld;
       yaw = yawOld;
@@ -271,7 +275,7 @@ void serial3Read() {
         dataStr[commaCount] += gpsString[i];
       }
     }
-//    Serial.println(gpsString);
+    //    Serial.println(gpsString);
     if (commaCount == 8) {
       UTC = dataStr[1].toFloat();
       north = dataStr[2].toFloat();
@@ -362,6 +366,7 @@ void dataSend() {
 
 
 void flash() {
+  serial1Read();
   count ++;
   if (count == 10) { //read the gearPin every 10 intervals
     durGear = pulseIn(gearPin, HIGH, 20000);
@@ -381,7 +386,6 @@ void flash() {
 
 void loop() {
   encoderRead();
-  serial1Read();
   serial2Read(); //for AHRS
   serial3Read(); //for GPS
 }

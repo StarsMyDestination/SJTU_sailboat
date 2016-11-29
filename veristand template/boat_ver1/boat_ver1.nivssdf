@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.16</String>
+				<String>1.0.0.17</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -352,6 +352,7 @@ Values
 												<Elem>HDOP</Elem>
 												<Elem>SOG</Elem>
 												<Elem>arduinoReadMark</Elem>
+												<Elem>UTC</Elem>
 											</StringArray>
 										</Property>
 										<Property Name="user.CD.Log Channel  1">
@@ -413,6 +414,9 @@ Values
 										</Property>
 										<Property Name="user.CD.Log Channel  20">
 											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/arduinoReadMark" />
+										</Property>
+										<Property Name="user.CD.Log Channel  21">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/UTC" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -690,7 +694,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 									<I32>1647616</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3510444429</Double>
+									<Double>3562882745</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -853,7 +857,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ERROR_STATUS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>16</I32>
+											<I32>17</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -958,7 +962,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>north</String>
 										</Property>
 										<Property Name="Index">
-											<I32>10</I32>
+											<I32>11</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -973,7 +977,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>east</String>
 										</Property>
 										<Property Name="Index">
-											<I32>11</I32>
+											<I32>12</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -988,7 +992,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>FS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>12</I32>
+											<I32>13</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1003,7 +1007,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>SVs</String>
 										</Property>
 										<Property Name="Index">
-											<I32>13</I32>
+											<I32>14</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1018,7 +1022,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>HDOP</String>
 										</Property>
 										<Property Name="Index">
-											<I32>14</I32>
+											<I32>15</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1033,7 +1037,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>SOG</String>
 										</Property>
 										<Property Name="Index">
-											<I32>15</I32>
+											<I32>16</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1049,6 +1053,21 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										</Property>
 										<Property Name="Index">
 											<I32>3</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="UTC" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>UTC</String>
+										</Property>
+										<Property Name="Index">
+											<I32>10</I32>
 										</Property>
 									</Properties>
 									<Errors />

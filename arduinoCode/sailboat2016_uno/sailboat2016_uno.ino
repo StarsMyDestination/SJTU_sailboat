@@ -168,6 +168,23 @@ struct
 }gpsData;
 
 
+void dataAssignTest(){
+  gpsData.UTC = 123.324;
+  gpsData.north = 3243.5464;
+  gpsData.east = 57849.4231;
+  gpsData.FS = 2;
+  gpsData.SVs = 10;
+  gpsData.HDOP = 1.32;
+  gpsData.SOG = 0.123;
+}
+
+void structDataSend(){
+  byte *tobyte = (byte*)&gpsData;
+  Serial.write(tobyte, sizeof(gpsData));
+};
+
+
+
 void dataSend() {
   Serial.print("#@");
   Serial.print(',');
@@ -194,10 +211,13 @@ void flash() {
 
 void loop()
 {
-  recvFromGps();
-  // Serial.println(gpsString);
-  dataParser();
-  if (readFlag) {
-    w84ToNE(lat, lon, listNE);
-  }
+  // recvFromGps();
+  // // Serial.println(gpsString);
+  // dataParser();
+  // if (readFlag) {
+  //   w84ToNE(lat, lon, listNE);
+  // }
+  dataAssignTest();
+  structDataSend();
+  
 }
