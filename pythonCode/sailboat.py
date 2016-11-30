@@ -1,13 +1,18 @@
 import struct
 import binascii
 from msgdev import MsgDevice, PeriodTimer
-import socket
+# import socket
 import math
 import serial
 
+sendDataFst = struct.Struct('!3B')
+recvDataBytes = 58
+# unsigned int--H;int--h;char--c;float--f;
+recvDataFst = struct.Struct('<H5h8f2h2fH')
 
-fst = struct.Struct('!3B')
 arduinoUrl = "socket://192.168.188.200:9000"
+# arduinoUrl = "COM5"
+# arduinoUrl = "socket://192.168.3.101:9000"
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
@@ -16,6 +21,10 @@ dataNum = 18
 sailOffset = -43
 windOffset = 105
 
+pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag',  # control related
+           'windAngRead', 'sailAngRead',  # encoder
+           'roll', 'pitch', 'yaw',  # ahrs
+           'UTC', 'north', 'east', 'FS', 'SVs', 'HDOP', 'SOG']  # gps
 
 
 def constraint(num, lowerLimit, upperLimit):
@@ -45,85 +54,69 @@ def crc8(x):
     return crc & 0xFF
 
 
+def crc16(x):
+    poly = 0x8408
+    crc = 0x0
+    for byte in x:
+        crc = crc ^ ord(byte)
+        for i in range(8):
+            last = (0xFFFF & crc) & 1
+            crc = (0xffff & crc) >> 1
+            if last == 1:
+                crc = crc ^ poly
+    return crc & 0xFFFF
+
+
 def dataSend(data):
     header = '\xff'
-    tmp = fst.pack(data[0], data[1], data[2])
+    tmp = sendDataFst.pack(data[0], data[1], data[2])
     crc_code = struct.pack('!B', crc8(tmp))
     # print binascii.hexlify(tmp), type(tmp)
     tmp = header + tmp
     tmp = tmp + crc_code
-    print binascii.hexlify(tmp)
+    # print binascii.hexlify(tmp)
     return tmp
 
 
 def dataRead(s):
+    header = chr(0x4f) + chr(0x5e)
     try:
-        tmp = s.recv(1024)
+        buff = s.recv(recvDataBytes)  # for socket
     except(AttributeError):
-        tmp = s.readline()
-        # print tmp
-    if tmp.startswith('#') and tmp.endswith('\n'):
-        tmp = tmp.rstrip('\n')
-        ps = tmp.split(',')
-        tmp = ""
-        if len(ps) != dataNum:
-            print 'invalid length'
-            print tmp
-            return None
+        buff = s.read(recvDataBytes)  # for serial
+    # print (buff.find(header))
+    if (buff.find(header)) == 0 and len(buff) == recvDataBytes:
+        crc16Num = crc16(buff[2:-2])
+        # print crc16Num
+        sensorDatas = recvDataFst.unpack(buff)
+        # print sensorData[-1]
+        if sensorDatas[-1] == crc16Num:
+            EsensorData = sensorDatas[1:-1]
+            # print EsensorData
+            # print type(EsensorData)
+            return list(EsensorData)
         else:
-            try:
-                motorMicroSec = int(ps[1])
-                rudderAng = int(ps[2])
-                sailAng = int(ps[3])
-                arduinoReadMark = int(ps[4])
-                autoFlag = int(ps[5])
-                windAngRead = float(ps[6])
-                sailAngRead = float(ps[7])
-                roll = float(ps[8])
-                pitch = float(ps[9])
-                yaw = float(ps[10])
-                utc = float(ps[11])
-                north = float(ps[12])
-                east = float(ps[13])
-                FS = int(ps[14])
-                SVs = int(ps[15])
-                HDOP = float(ps[16])
-                SOG = float(ps[17])
-                return([motorMicroSec, rudderAng, sailAng, arduinoReadMark,
-                        autoFlag, windAngRead, sailAngRead, roll, pitch, yaw,
-                        utc, north, east, FS, SVs, HDOP, SOG])
-            except Exception, e:
-                print "data read from Arduino error", e
-                return None
+            print "recv error: crc check error"
+            return None
     else:
-        print 'invalid data'
+        print "recv error: invalid data"
         return None
+
 
 def to180(data):
     if data < -180:
-        data = data+360
+        data = data + 360
     elif data > 180:
-        data = data-360
+        data = data - 360
     return data
 
+
 def pubToVeristand(dev, data):
-    dev.pub_set1('motorMicroSec', data[0])
-    dev.pub_set1('rudderAng', data[1])
-    dev.pub_set1('sailAng', data[2])
-    dev.pub_set1('arduinoReadMark', data[3])
-    dev.pub_set1('autoFlag', data[4])
-    dev.pub_set1('windAngRead', to180(data[5]-windOffset))
-    dev.pub_set1('sailAngRead', to180(data[6]-sailOffset))
-    dev.pub_set1('roll', data[7])
-    dev.pub_set1('pitch', data[8])
-    dev.pub_set1('yaw', data[9])
-    dev.pub_set1('UTC', data[10]) 
-    dev.pub_set1('north', data[11])
-    dev.pub_set1('east', data[12])
-    dev.pub_set1('FS', data[13])
-    dev.pub_set1('SVs', data[14])
-    dev.pub_set1('HDOP', data[15])
-    dev.pub_set1('SOG', data[16])
+    data[5] = data[5] - windOffset  # wind data
+    data[6] = data[6] - sailOffset  # sail data
+
+    for i in xrange(len(pubUrls)):
+        dev.pub_set1(pubUrls[i], data[i])
 
 
 def subFromVeristand(dev):
@@ -138,15 +131,16 @@ def subFromVeristand(dev):
     rudderAng = myMap(rudderAng, -40, 40, 50, 130)
     rudderAng = constraint(rudderAng, 50, 130)
     rudderAng = int(rudderAng)
-    sailAng = myMap(sailAng, -80, 80, 20, 160)
-    sailAng = constraint(sailAng, 20, 160)
+    sailAng = myMap(sailAng, 0, 80, 50, 130)
+    sailAng = constraint(sailAng, 50, 130)
     sailAng = int(sailAng)
     return([motorSpeed, rudderAng, sailAng])
 
 
 def main():
-    # arduinoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, )
-    arduinoSer = serial.serial_for_url(arduinoUrl, baudrate=115200, do_not_open = True, timeout = 1)
+    # arduinoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    arduinoSer = serial.serial_for_url(
+        arduinoUrl, baudrate=115200, do_not_open=True, timeout=1)
     dev = MsgDevice()
     dev.open()
     dev.pub_bind(msgPubBind)
@@ -165,9 +159,9 @@ def main():
             print e, ", trying reconnet..."
         while True:
             with t:
-                # data = subFromVeristand(dev)
-                data = [100, 90, 0]
-                print data
+                data = subFromVeristand(dev)
+                # data = [100, 90, 0]
+                print "SEND: ", data
                 if not arduinoSer._isOpen:
                     try:
                         arduinoSer.open()
@@ -177,7 +171,7 @@ def main():
                     if arduinoSer._isOpen:
                         arduinoSer.write(dataSend(data))
                         dataFromArduino = dataRead(arduinoSer)
-                        print dataFromArduino
+                        print "RECV: ", dataFromArduino
                 except serial.serialutil.SerialException, e:
                     arduinoSer.close()
                 try:

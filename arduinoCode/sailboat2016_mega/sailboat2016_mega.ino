@@ -1,9 +1,11 @@
 #include <Servo.h>
 #include <FlexiTimer2.h>
 #define pi 3.141592654;
+#define GPSBUFFER_MAX_LENGTH 28;
 //servo configure
 Servo motor, rudder, sail;
 int motorMicroSec = 1500, motorMicroSecOld = 1500;
+int motorDeadZone = 45;
 int rudderAng = 140, rudderAngOld = 140;
 int sailAng = 140, sailAngOld = 140;
 //data read
@@ -25,21 +27,51 @@ int durGear; // used for control type switch (control type: auto or manual)
 int motorVelLimit = 20;
 int rudderVelLimit = 6;
 int rudderLimit = 35;
-int sailVelLimit = 6;
+int sailVelLimit = 10;
 int sailLimit = 40;
 // encoder
 const byte CS = 22;
 const byte CL = 23;
 const byte DA1 = 24;
 const byte DA2 = 25;
-float sailAngRead = 0; //deg
-float windAngRead = 0; //deg
-// gps
-double north, east;
-float HDOP, SOG, UTC;
-int SVs, FS;
-// AHRS
-float roll, pitch, yaw, rollOld, pitchOld, yawOld;
+
+
+struct //total 2+6+8+24+12+2=54 bytes
+{
+  //header (total 2 bytes)
+  byte header1;  // 1 bytes
+  byte header2;  // 1 bytes
+
+  //control part (total 10 bytes)
+  int motorMicroSec; // 2 bytes
+  int rudderAng;  // 2
+  int sailAng;    // 2
+  int readMark;   // 2
+  int autoFlag;   // 2
+
+  //encoder (total 8 bytes)
+  float windAngRead;  //4
+  float sailAngRead;  //4
+
+
+  //AHRS data (total 12 bytes)
+  float roll;   //4
+  float pitch;  //4
+  float yaw;    //4
+
+  //GPS data (total 24 bytes)
+  float UTC;     //4
+  float north;   //4
+  float east;    //4
+  int FS;        //2
+  int SVs;       //2
+  float HDOP;    //4
+  float SOG;     //4
+
+  //crc (total 2 bytes)
+  unsigned int crcnum;  //2
+
+} sensorData = {0};
 
 
 void setup() {
@@ -64,6 +96,8 @@ void setup() {
   Serial1.flush(); //clear buff
   Serial2.flush(); //clear buff
   durGear = pulseIn(gearPin, HIGH);
+  sensorData.header1 = 0x4f;
+  sensorData.header2 = 0x5e;
   FlexiTimer2::set(100, flash);
   FlexiTimer2::start();
 }
@@ -97,8 +131,8 @@ void encoderRead() {
     Angle_2_data = Angle_2 >> 6;
   }
   else  Angle_2_data = 0;
-  sailAngRead = Angle_Cal(Angle_1_data, 0);
-  windAngRead = Angle_Cal(Angle_2_data, 0);
+  sensorData.sailAngRead = Angle_Cal(Angle_1_data, 0);
+  sensorData.windAngRead = Angle_Cal(Angle_2_data, 0);
 } //end of ReadEncoder
 
 float Angle_Cal(int data, float Offset) {
@@ -181,62 +215,32 @@ void serial1Read() {
 }
 
 
-void serial2Read() { //used for AHRS
-  unsigned char n[3] = {0}, x[4] = {0}, y[4] = {0}, z[4] = {0}, crc[2] = {0}, crcfield[15];
+void serial2ReadStruct(int ahrsBufferSize) { //used for AHRS
   boolean headIsFound = 0;
-  unsigned int crcResult, crcKey;
-  while (Serial1.available() > (2 * 19 - 1)) Serial1.read();
+  while (Serial1.available() > (2 * ahrsBufferSize - 1)) Serial1.read();
   while (Serial1.available()) {
     if ((int)Serial1.read() == 0xFF && (int)Serial1.read() == 0X02) {
       headIsFound = 1;
       break;
     }
   }
-  while (headIsFound && Serial1.available() > 17) {
-    for (int i = 0; i < 3; i++)
-    {
-      n[i] = Serial1.read();
-      crcfield[i] = n[i];
-    }//three bytes 09 0C 00 after FF 02
-    for (int i = 0; i < 4; i++) {
-      x[i] = Serial1.read();
-      crcfield[i + 3] = x[i];
-    }//read 4-byte angle for x
-    for (int i = 0; i < 4; i++) {
-      y[i] = Serial1.read();
-      crcfield[i + 7] = y[i];
-    }//read 4-byte angle for y
-    for (int i = 0; i < 4; i++) {
-      z[i] = Serial1.read();
-      crcfield[i + 11] = z[i];
-    }//read 4-byte angle for z
-    for (int i = 0; i < 2; i++) {
-      crc[i] = Serial1.read();
-    }
-    roll = *((float *)x); //tranfer x 4-byte array to a float num
-    pitch = *((float *)y); //tranfer y 4-byte array to a float num
-    yaw = *((float *)z); //tranfer z 4-byte array to a float num
-    roll = roll * 180 / pi;
-    pitch = pitch * 180 / pi;
-    yaw = yaw * 180 / pi;
-    crcResult = ahrsCRC(crcfield, 15);
-    crcKey = (int)crc[0] << 8 | (int)crc[1];
-    if (crcResult == crcKey)
-    {
-      rollOld = roll;
-      pitchOld = pitch;
-      yawOld = yaw;
-    }
-    else {
-
-      roll = rollOld;
-      pitch = pitchOld;
-      yaw = yawOld;
+  while (headIsFound && Serial1.available() >= (ahrsBufferSize - 2)) {
+    byte ahrsBuffer[ahrsBufferSize - 2];
+    Serial1.readBytes(ahrsBuffer, (ahrsBufferSize - 2));
+    byte crcField[ahrsBufferSize - 4]; //i.e. valid data length
+    for (int i = 0; i < (ahrsBufferSize - 4); i++) crcField[i] = ahrsBuffer[i];
+    unsigned int crcnum = CRC16(crcField, sizeof(crcField));
+    byte *pAhrsBuffer = ahrsBuffer;
+    unsigned int ahrsCRC = *((unsigned int*)(pAhrsBuffer + 15));
+    if (crcnum == ahrsCRC) {
+      sensorData.roll = *((float*)pAhrsBuffer + 3);
+      sensorData.pitch = *((float*)(pAhrsBuffer + 7));
+      sensorData.yaw = *((float*)(pAhrsBuffer + 11));
     }
   }
 }
 
-unsigned int ahrsCRC(const byte *pBuffer, unsigned int bufferSize)
+unsigned int CRC16(const byte *pBuffer, unsigned int bufferSize)
 {
   unsigned int poly = 0x8408;
   unsigned int crc = 0;
@@ -259,31 +263,34 @@ unsigned int ahrsCRC(const byte *pBuffer, unsigned int bufferSize)
   return crc;
 }
 
-
-void serial3Read() {
-  String gpsString = "";
+void serial3ReadStruct(int gpsBufferSize) {
+  boolean headIsFound = 0;
+  while (Serial2.available() > (2 * gpsBufferSize - 1)) Serial2.read();
   while (Serial2.available()) {
-    char inchar = Serial2.read();
-    gpsString += inchar;
-  }
-  if (gpsString.startsWith("#@") && gpsString.endsWith("$*\n")) {
-    String dataStr[9] = {""};
-    int commaCount = 0;
-    for (int i = 0; i < gpsString.length(); i++) {
-      if (gpsString[i] == ',') commaCount ++;
-      else {
-        dataStr[commaCount] += gpsString[i];
-      }
+    //    Serial.println((int)Serial2.read());
+    if ((int)Serial2.read() == 0x4f && (int)Serial2.read() == 0x5e) {
+      headIsFound = 1;
+      break;
     }
-    //    Serial.println(gpsString);
-    if (commaCount == 8) {
-      UTC = dataStr[1].toFloat();
-      north = dataStr[2].toFloat();
-      east = dataStr[3].toFloat();
-      FS = dataStr[4].toInt();
-      SVs = dataStr[5].toInt();
-      HDOP = dataStr[6].toFloat();
-      SOG = dataStr[7].toFloat();
+  }
+  //  Serial.println(headIsFound);
+  if (headIsFound && Serial2.available() >= (gpsBufferSize - 2)) {
+    // Serial.println(Serial2.available());
+    byte gpsBuffer[gpsBufferSize - 2]; //minus header 2 bytes
+    Serial2.readBytes(gpsBuffer, gpsBufferSize - 2);
+    byte crcField[gpsBufferSize - 4]; //minus header 2 bytes and crc 2 bytes,i.e valid data length
+    for (int i = 0; i < (gpsBufferSize - 4); i++) crcField[i] = gpsBuffer[i];
+    unsigned int crcnum = CRC16(crcField, sizeof(crcField));
+    byte *pGpsBuffer = gpsBuffer;
+    unsigned int gpsCRC = *((unsigned int*)(pGpsBuffer + 24));
+    if (crcnum == gpsCRC) {
+      sensorData.UTC = *((float*)pGpsBuffer);
+      sensorData.north = *((float*)(pGpsBuffer + 4));
+      sensorData.east = *((float*)(pGpsBuffer + 8));
+      sensorData.FS = *((int*)(pGpsBuffer + 12));
+      sensorData.SVs = *((int*)(pGpsBuffer + 14));
+      sensorData.HDOP = *((float*)(pGpsBuffer + 16));
+      sensorData.SOG = *((float*)(pGpsBuffer + 20));
     }
   }
 }
@@ -297,7 +304,7 @@ void signalSelection() {
   }
   else {
     motorMicroSec = pulseIn(elevPin, HIGH);
-    motorMicroSec = map(motorMicroSec, 1100, 1900, 1100, 1900);
+    motorMicroSec = map(motorMicroSec, 1100, 1900, 1300, 1700);
     int durRudd = pulseIn(ruddPin, HIGH);
     rudderAng = map(durRudd, 1100, 1900, 100, 180);
     int durThro = pulseIn(throPin, HIGH);
@@ -307,7 +314,7 @@ void signalSelection() {
 
 
 void veloLimit() {
-  motorMicroSec = constrain(motorMicroSec, motorMicroSecOld - motorVelLimit, motorMicroSecOld + motorVelLimit);
+  // motorMicroSec = constrain(motorMicroSec, motorMicroSecOld - motorVelLimit, motorMicroSecOld + motorVelLimit);
 
   rudderAng = constrain(rudderAng, rudderAngOld - rudderVelLimit, rudderAngOld + rudderVelLimit); //limit up to 50 deg/s
 
@@ -326,42 +333,17 @@ void servoCtrl() {
 }
 
 
-void dataSend() {
-  Serial.print("#");
-  Serial.print(",");
-  Serial.print(motorMicroSec);
-  Serial.print(",");
-  Serial.print(rudderAng - 140);
-  Serial.print(",");
-  Serial.print(sailAng - 100);
-  Serial.print(",");
-  Serial.print(readMark);
-  Serial.print(",");
-  Serial.print(autoFlag);
-  Serial.print(",");
-  Serial.print(windAngRead); //dogvane angle
-  Serial.print(",");
-  Serial.print(sailAngRead); //sail encoder
-  Serial.print(",");
-  Serial.print(roll); //keep for ahrs roll
-  Serial.print(",");
-  Serial.print(pitch); //keep for ahrs pitch
-  Serial.print(",");
-  Serial.print(yaw); //keep for ahrs yaw
-  Serial.print(",");
-  Serial.print(UTC); // gps pos.x
-  Serial.print(",");
-  Serial.print(north); // gps pos.x
-  Serial.print(",");
-  Serial.print(east); // gps pos.y
-  Serial.print(",");
-  Serial.print(FS); // FS(Fix Status, 0 no fix; 1 Standard(2D/3D); 2 DGPS)
-  Serial.print(",");
-  Serial.print(SVs); // SVs(satellites used, range 0-12)
-  Serial.print(",");
-  Serial.print(HDOP); // HDOP(Horizontal Dilution of Precision， range 0.5-99)
-  Serial.print(",");
-  Serial.println(SOG); // SOG(speed over ground m/s)
+void structDataSend() {
+  sensorData.motorMicroSec = motorMicroSec;
+  sensorData.rudderAng = rudderAng - 140;
+  sensorData.sailAng = sailAng - 100;
+  sensorData.readMark = readMark;
+  sensorData.autoFlag = autoFlag;
+
+  byte *tobyte = (byte*)&sensorData;
+  sensorData.crcnum = CRC16(tobyte + 2, sizeof(sensorData) - 4); //the valid data part as used to generate crc
+  //  Serial.println(sizeof(sensorData));
+  Serial.write(tobyte, sizeof(sensorData));
 }
 
 
@@ -381,11 +363,12 @@ void flash() {
   signalSelection();
   veloLimit();
   servoCtrl();
-  dataSend();
+  structDataSend();
 }
 
 void loop() {
   encoderRead();
-  serial2Read(); //for AHRS
-  serial3Read(); //for GPS
+  serial2ReadStruct(19); //for AHRS
+  serial3ReadStruct(28); //for GPS
+  // delay(10);
 }
