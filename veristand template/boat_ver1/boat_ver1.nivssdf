@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.17</String>
+				<String>1.0.0.25</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -216,13 +216,8 @@
 							<Properties>
 								<Property Name="user.CD.Log File Dir">
 									<StringArray>
-										<Elem>E</Elem>
-										<Elem>百度云同步盘</Elem>
-										<Elem>Q 钱塘江实验</Elem>
-										<Elem>底层程序</Elem>
-										<Elem>Veristand 模板</Elem>
-										<Elem>boat_ver1</Elem>
-										<Elem>Logs</Elem>
+										<Elem>F</Elem>
+										<Elem>VerLogs</Elem>
 									</StringArray>
 								</Property>
 								<Property Name="user.CD.Timestamp">
@@ -857,7 +852,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ERROR_STATUS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>17</I32>
+											<I32>19</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1068,6 +1063,36 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										</Property>
 										<Property Name="Index">
 											<I32>10</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="ageC" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>ageC</String>
+										</Property>
+										<Property Name="Index">
+											<I32>17</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Hacc" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Hacc</String>
+										</Property>
+										<Property Name="Index">
+											<I32>18</I32>
 										</Property>
 									</Properties>
 									<Errors />

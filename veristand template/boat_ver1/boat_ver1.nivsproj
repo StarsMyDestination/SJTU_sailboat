@@ -177,38 +177,38 @@
 				</Properties>
 				<Errors />
 			</Section>
-			<Section Name="boat_ver1.nivssdf" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
+			<Section Name="boat_ver1.nivssdf (1)" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
 				<Description />
 				<Properties>
 					<Property Name="Path">
-						<String>C:\Users\建云\Documents\百度云同步盘\NewSailboat\sourceCode\veristand template\boat_ver1\boat_ver1.nivssdf</String>
+						<String>E:\百度云同步盘\NewSailboat\veristand template\boat_ver1\boat_ver1.nivssdf</String>
 					</Property>
 				</Properties>
 				<Errors />
 			</Section>
-			<Section Name="boat_ver1.nivsscreen" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
+			<Section Name="boat_ver1.nivsscreen (1)" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
 				<Description />
 				<Properties>
 					<Property Name="Path">
-						<String>C:\Users\建云\Documents\百度云同步盘\NewSailboat\sourceCode\veristand template\boat_ver1\boat_ver1.nivsscreen</String>
+						<String>E:\百度云同步盘\NewSailboat\veristand template\boat_ver1\boat_ver1.nivsscreen</String>
 					</Property>
 				</Properties>
 				<Errors />
 			</Section>
-			<Section Name="msgdev.lvmodel" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
+			<Section Name="msgdev.lvmodel (2)" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
 				<Description />
 				<Properties>
 					<Property Name="Path">
-						<String>C:\Users\建云\Documents\百度云同步盘\NewSailboat\sourceCode\veristand template\boat_ver1\pubsub配置文件\pub\msgdev.lvmodel</String>
+						<String>E:\百度云同步盘\NewSailboat\veristand template\boat_ver1\pubsub配置文件\pub\msgdev.lvmodel</String>
 					</Property>
 				</Properties>
 				<Errors />
 			</Section>
-			<Section Name="msgdev.lvmodel (1)" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
+			<Section Name="msgdev.lvmodel (3)" TypeGUID="369b9797-43bd-4cdf-8352-81032feed666">
 				<Description />
 				<Properties>
 					<Property Name="Path">
-						<String>C:\Users\建云\Documents\百度云同步盘\NewSailboat\sourceCode\veristand template\boat_ver1\pubsub配置文件\sub\msgdev.lvmodel</String>
+						<String>E:\百度云同步盘\NewSailboat\veristand template\boat_ver1\pubsub配置文件\sub\msgdev.lvmodel</String>
 					</Property>
 				</Properties>
 				<Errors />

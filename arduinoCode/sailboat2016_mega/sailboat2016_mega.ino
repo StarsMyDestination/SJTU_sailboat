@@ -36,7 +36,7 @@ const byte DA1 = 24;
 const byte DA2 = 25;
 
 
-struct //total 2+6+8+24+12+2=54 bytes
+struct //total 2+10+8+12+30+2=60 bytes
 {
   //header (total 2 bytes)
   byte header1;  // 1 bytes
@@ -59,14 +59,16 @@ struct //total 2+6+8+24+12+2=54 bytes
   float pitch;  //4
   float yaw;    //4
 
-  //GPS data (total 24 bytes)
-  float UTC;     //4
-  float north;   //4
-  float east;    //4
-  int FS;        //2
-  int SVs;       //2
-  float HDOP;    //4
-  float SOG;     //4
+  //GPS data (total 30 bytes)
+  float UTC;   //4
+  float lat;   //4
+  float lon;   //4
+  int FS;      //2
+  float Hacc;  //4
+  float SOG;   //4
+  int ageC;    //2
+  float HDOP;  //4
+  int SVs;     //2
 
   //crc (total 2 bytes)
   unsigned int crcnum;  //2
@@ -282,15 +284,17 @@ void serial3ReadStruct(int gpsBufferSize) {
     for (int i = 0; i < (gpsBufferSize - 4); i++) crcField[i] = gpsBuffer[i];
     unsigned int crcnum = CRC16(crcField, sizeof(crcField));
     byte *pGpsBuffer = gpsBuffer;
-    unsigned int gpsCRC = *((unsigned int*)(pGpsBuffer + 24));
+    unsigned int gpsCRC = *((unsigned int*)(pGpsBuffer + 30));
     if (crcnum == gpsCRC) {
       sensorData.UTC = *((float*)pGpsBuffer);
-      sensorData.north = *((float*)(pGpsBuffer + 4));
-      sensorData.east = *((float*)(pGpsBuffer + 8));
+      sensorData.lat = *((float*)(pGpsBuffer + 4));
+      sensorData.lon = *((float*)(pGpsBuffer + 8));
       sensorData.FS = *((int*)(pGpsBuffer + 12));
-      sensorData.SVs = *((int*)(pGpsBuffer + 14));
-      sensorData.HDOP = *((float*)(pGpsBuffer + 16));
-      sensorData.SOG = *((float*)(pGpsBuffer + 20));
+      sensorData.Hacc = *((float*)(pGpsBuffer + 14));
+      sensorData.SOG = *((float*)(pGpsBuffer + 18));
+      sensorData.ageC = *((int*)(pGpsBuffer + 22));
+      sensorData.HDOP = *((float*)(pGpsBuffer + 24));
+      sensorData.SVs = *((int*)(pGpsBuffer + 28));
     }
   }
 }
@@ -369,6 +373,6 @@ void flash() {
 void loop() {
   encoderRead();
   serial2ReadStruct(19); //for AHRS
-  serial3ReadStruct(28); //for GPS
+  serial3ReadStruct(34); //for GPS
   // delay(10);
 }

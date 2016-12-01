@@ -4,27 +4,31 @@ from msgdev import MsgDevice, PeriodTimer
 # import socket
 import math
 import serial
+from math import *
 
 sendDataFst = struct.Struct('!3B')
-recvDataBytes = 58
+recvDataBytes = 64
 # unsigned int--H;int--h;char--c;float--f;
-recvDataFst = struct.Struct('<H5h8f2h2fH')
+recvDataFst = struct.Struct('<H5h8fh2fhfhH')
 
-arduinoUrl = "socket://192.168.188.200:9000"
-# arduinoUrl = "COM5"
-# arduinoUrl = "socket://192.168.3.101:9000"
+# arduinoUrl = "socket://192.168.188.200:9000" # exp use
+# arduinoUrl = "COM5"  # serial test use
+arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
 
-dataNum = 18
+# encoder offset
 sailOffset = -43
 windOffset = 105
 
 pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag',  # control related
            'windAngRead', 'sailAngRead',  # encoder
            'roll', 'pitch', 'yaw',  # ahrs
-           'UTC', 'north', 'east', 'FS', 'SVs', 'HDOP', 'SOG']  # gps
+           'UTC', 'north', 'east', 'FS', 'Hacc', 'SOG', 'ageC', 'HDOP', 'SVs']  # gps
+
+# gps origin
+latOrigin, lonOrigin = 31.032434463500977, 121.44171905517578
 
 
 def constraint(num, lowerLimit, upperLimit):
@@ -39,6 +43,26 @@ def myMap(num, l1, u1, l2, u2):
     k = (u2 - l2) / (u1 - l1)
     tmp = l2 + k * (num - l1)
     return tmp
+
+
+def d2r(d):
+    return d / 180.0 * pi
+
+
+def w84_calc_ne(lat2, lon2):
+    lat1, lon1 = d2r(latOrigin), d2r(lonOrigin)
+    lat2, lon2 = d2r(lat2), d2r(lon2)
+    d_lat = lat2 - lat1
+    d_lon = lon2 - lon1
+
+    a = 6378137.0
+    e_2 = 6.69437999014e-3
+    r1 = a * (1 - e_2) / (1 - e_2 * (sin(lat1))**2)**1.5
+    r2 = a / sqrt(1 - e_2 * (sin(lat1))**2)
+
+    north = r1 * d_lat
+    east = r2 * cos(lat1) * d_lon
+    return north, east
 
 
 def crc8(x):
@@ -114,7 +138,10 @@ def to180(data):
 def pubToVeristand(dev, data):
     data[5] = data[5] - windOffset  # wind data
     data[6] = data[6] - sailOffset  # sail data
-
+    north, east = w84_calc_ne(data[11], data[12])  # lat lon
+    # print north, east
+    data[11] = north
+    data[12] = east
     for i in xrange(len(pubUrls)):
         dev.pub_set1(pubUrls[i], data[i])
 

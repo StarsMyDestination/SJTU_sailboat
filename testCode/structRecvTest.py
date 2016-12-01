@@ -3,9 +3,9 @@ import serial
 # from msgdev import MsgDevice, PeriodTimer
 
 
-fst = struct.Struct('<H3f2h2fH')
-numBytes = 28
-arduinoPort = 'COM6'
+fst = struct.Struct('<H3fh2fhfhH')
+numBytes = 34
+arduinoPort = 'COM14'
 header = chr(0x4f) + chr(0x5e)
 
 
