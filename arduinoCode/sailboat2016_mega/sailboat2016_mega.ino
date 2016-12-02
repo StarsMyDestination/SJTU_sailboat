@@ -236,11 +236,12 @@ void serial2ReadStruct(int ahrsBufferSize) { //used for AHRS
     for (int i = 0; i < (ahrsBufferSize - 4); i++) crcField[i] = ahrsBuffer[i];
     unsigned int crcnum = CRC16(crcField, sizeof(crcField));
     byte *pAhrsBuffer = ahrsBuffer;
-    unsigned int ahrsCRC = *((unsigned int*)(pAhrsBuffer + 15));
+    // unsigned int ahrsCRC = *((unsigned int*)(pAhrsBuffer + 15));
+    unsigned int ahrsCRC = *(pAhrsBuffer + 15)<<8 | *(pAhrsBuffer + 16);
     if (crcnum == ahrsCRC) {
-      sensorData.roll = *((float*)pAhrsBuffer + 3);
-      sensorData.pitch = *((float*)(pAhrsBuffer + 7));
-      sensorData.yaw = *((float*)(pAhrsBuffer + 11));
+      sensorData.roll = (*((float*)(pAhrsBuffer + 3)))*180/pi;
+      sensorData.pitch = (*((float*)(pAhrsBuffer + 7)))*180/pi;
+      sensorData.yaw = (*((float*)(pAhrsBuffer + 11)))*180/pi;
     }
   }
 }

@@ -12,7 +12,7 @@ recvDataBytes = 68
 recvDataFst = struct.Struct('<H5h8fh2fhfhLH')
 
 arduinoUrl = "socket://192.168.188.200:9000" # exp use
-# arduinoUrl = "COM15"  # serial test use
+# arduinoUrl = "COM14"  # serial test use
 # arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
@@ -20,7 +20,7 @@ msgPubBind = 'tcp://0.0.0.0:6666'
 
 # encoder offset
 sailOffset = -43
-windOffset = 105
+windOffset = 90
 
 pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag',  # control related
            'windAngRead', 'sailAngRead',  # encoder
@@ -29,7 +29,7 @@ pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag
            'time']  # arduino time since program starting
 
 # gps origin
-latOrigin, lonOrigin = 31.032434463500977, 121.44171905517578
+latOrigin, lonOrigin = 31.0231885623383, 121.425143928016
 
 
 def constraint(num, lowerLimit, upperLimit):
@@ -138,8 +138,8 @@ def to180(data):
 
 
 def pubToVeristand(dev, data):
-    data[5] = data[5] - windOffset  # wind data
-    data[6] = data[6] - sailOffset  # sail data
+    data[5] = to180(data[5] - windOffset)  # wind data
+    data[6] = to180(data[6] - sailOffset)  # sail data
     north, east = w84_calc_ne(data[11], data[12])  # lat lon
     # print north, east
     data[11] = north
