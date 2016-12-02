@@ -3,9 +3,9 @@ import serial
 # from msgdev import MsgDevice, PeriodTimer
 
 
-fst = struct.Struct('<H5h8f2h2fH')
-numBytes = 58
-arduinoPort = "COM5"
+fst = struct.Struct('<H5h8fh2fhfhLH')
+numBytes = 68
+arduinoPort = "COM15"
 header = chr(0x4f) + chr(0x5e)
 
 
@@ -39,7 +39,7 @@ def dataRead(s):
 
 def main():
     arduinoSer = serial.Serial(arduinoPort, baudrate=115200, timeout=1)
-    # arduinoSer.flush()
+    arduinoSer.flush()
     print arduinoSer.isOpen()
     while 1:
         dataRead(arduinoSer)

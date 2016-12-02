@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.25</String>
+				<String>1.0.0.28</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -244,7 +244,7 @@
 									<Properties />
 									<Errors />
 									<DefaultValue>
-										<Elem>1</Elem>
+										<Elem>0</Elem>
 									</DefaultValue>
 								</Channel>
 								<Channel Name="Log Command" TypeGUID="9b525fa0-4d4a-4ec1-902b-bfeef88ebbcc" RowDim="1" ColDim="1" Units="" BitFields="3">
@@ -348,6 +348,9 @@ Values
 												<Elem>SOG</Elem>
 												<Elem>arduinoReadMark</Elem>
 												<Elem>UTC</Elem>
+												<Elem>ageC</Elem>
+												<Elem>Hacc</Elem>
+												<Elem>ArduinoTime</Elem>
 											</StringArray>
 										</Property>
 										<Property Name="user.CD.Log Channel  1">
@@ -412,6 +415,15 @@ Values
 										</Property>
 										<Property Name="user.CD.Log Channel  21">
 											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/UTC" />
+										</Property>
+										<Property Name="user.CD.Log Channel  22">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/ageC" />
+										</Property>
+										<Property Name="user.CD.Log Channel  23">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Hacc" />
+										</Property>
+										<Property Name="user.CD.Log Channel  24">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/ArduinoTime" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -852,7 +864,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ERROR_STATUS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>19</I32>
+											<I32>20</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1093,6 +1105,21 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										</Property>
 										<Property Name="Index">
 											<I32>18</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="ArduinoTime" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>ArduinoTime</String>
+										</Property>
+										<Property Name="Index">
+											<I32>19</I32>
 										</Property>
 									</Properties>
 									<Errors />

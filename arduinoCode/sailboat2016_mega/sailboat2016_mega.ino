@@ -36,7 +36,7 @@ const byte DA1 = 24;
 const byte DA2 = 25;
 
 
-struct //total 2+10+8+12+30+2=60 bytes
+struct //total 2+10+8+12+30+4+2=68 bytes
 {
   //header (total 2 bytes)
   byte header1;  // 1 bytes
@@ -69,6 +69,9 @@ struct //total 2+10+8+12+30+2=60 bytes
   int ageC;    //2
   float HDOP;  //4
   int SVs;     //2
+
+  //time(ms since board begin)
+  unsigned long time;  // 4
 
   //crc (total 2 bytes)
   unsigned int crcnum;  //2
@@ -343,6 +346,8 @@ void structDataSend() {
   sensorData.sailAng = sailAng - 100;
   sensorData.readMark = readMark;
   sensorData.autoFlag = autoFlag;
+
+  sensorData.time = millis();
 
   byte *tobyte = (byte*)&sensorData;
   sensorData.crcnum = CRC16(tobyte + 2, sizeof(sensorData) - 4); //the valid data part as used to generate crc

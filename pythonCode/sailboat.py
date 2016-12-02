@@ -7,13 +7,13 @@ import serial
 from math import *
 
 sendDataFst = struct.Struct('!3B')
-recvDataBytes = 64
+recvDataBytes = 68
 # unsigned int--H;int--h;char--c;float--f;
-recvDataFst = struct.Struct('<H5h8fh2fhfhH')
+recvDataFst = struct.Struct('<H5h8fh2fhfhLH')
 
-# arduinoUrl = "socket://192.168.188.200:9000" # exp use
-# arduinoUrl = "COM5"  # serial test use
-arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
+arduinoUrl = "socket://192.168.188.200:9000" # exp use
+# arduinoUrl = "COM15"  # serial test use
+# arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
 msgPubBind = 'tcp://0.0.0.0:6666'
@@ -25,7 +25,8 @@ windOffset = 105
 pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag',  # control related
            'windAngRead', 'sailAngRead',  # encoder
            'roll', 'pitch', 'yaw',  # ahrs
-           'UTC', 'north', 'east', 'FS', 'Hacc', 'SOG', 'ageC', 'HDOP', 'SVs']  # gps
+           'UTC', 'north', 'east', 'FS', 'Hacc', 'SOG', 'ageC', 'HDOP', 'SVs',  # gps
+           'time']  # arduino time since program starting
 
 # gps origin
 latOrigin, lonOrigin = 31.032434463500977, 121.44171905517578
@@ -108,6 +109,7 @@ def dataRead(s):
         buff = s.recv(recvDataBytes)  # for socket
     except(AttributeError):
         buff = s.read(recvDataBytes)  # for serial
+    # print binascii.hexlify(buff)
     # print (buff.find(header))
     if (buff.find(header)) == 0 and len(buff) == recvDataBytes:
         crc16Num = crc16(buff[2:-2])
