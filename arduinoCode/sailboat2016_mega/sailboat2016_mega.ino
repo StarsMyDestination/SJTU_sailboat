@@ -36,7 +36,7 @@ const byte DA1 = 24;
 const byte DA2 = 25;
 
 
-struct //total 2+10+8+12+30+4+2=68 bytes
+struct //total 2+10+8+36+30+4+2=92 bytes
 {
   //header (total 2 bytes)
   byte header1;  // 1 bytes
@@ -54,10 +54,16 @@ struct //total 2+10+8+12+30+4+2=68 bytes
   float sailAngRead;  //4
 
 
-  //AHRS data (total 12 bytes)
+  //AHRS data EulerAngle GyroAngleVel Accel (total 36 bytes)
   float roll;   //4
   float pitch;  //4
   float yaw;    //4
+  float Gx;     //4
+  float Gy;     //4
+  float Gz;     //4
+  float Ax;     //4
+  float Ay;     //4
+  float Az;     //4
 
   //GPS data (total 30 bytes)
   float UTC;   //4
@@ -206,7 +212,7 @@ void serial1Read() {
   else {
     serial_out_count ++;
     readMark = 0;
-    if (serial_out_count > 10) {  //timeout=10*0.2=2s
+    if (serial_out_count > 10) {  //timeout=10*0.1=1s
       motorData = 100;
       rudderData = 90;
       sailData = 90;
@@ -237,11 +243,18 @@ void serial2ReadStruct(int ahrsBufferSize) { //used for AHRS
     unsigned int crcnum = CRC16(crcField, sizeof(crcField));
     byte *pAhrsBuffer = ahrsBuffer;
     // unsigned int ahrsCRC = *((unsigned int*)(pAhrsBuffer + 15));
-    unsigned int ahrsCRC = *(pAhrsBuffer + 15)<<8 | *(pAhrsBuffer + 16);
+    unsigned int ahrsCRC = *(pAhrsBuffer + 39)<<8 | *(pAhrsBuffer + 40); //big-endian
     if (crcnum == ahrsCRC) {
+      // dataField config ahrs output to little-endian
       sensorData.roll = (*((float*)(pAhrsBuffer + 3)))*180/pi;
       sensorData.pitch = (*((float*)(pAhrsBuffer + 7)))*180/pi;
       sensorData.yaw = (*((float*)(pAhrsBuffer + 11)))*180/pi;
+      sensorData.Gx = *((float*)(pAhrsBuffer + 15));
+      sensorData.Gy = *((float*)(pAhrsBuffer + 19));
+      sensorData.Gz = *((float*)(pAhrsBuffer + 23));
+      sensorData.Ax = *((float*)(pAhrsBuffer + 27));
+      sensorData.Ay = *((float*)(pAhrsBuffer + 31));
+      sensorData.Az = *((float*)(pAhrsBuffer + 35));
     }
   }
 }
@@ -378,7 +391,7 @@ void flash() {
 
 void loop() {
   encoderRead();
-  serial2ReadStruct(19); //for AHRS
-  serial3ReadStruct(34); //for GPS
+  serial2ReadStruct(36+7); //for AHRS
+  serial3ReadStruct(30+4); //for GPS
   // delay(10);
 }

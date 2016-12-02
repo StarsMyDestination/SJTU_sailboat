@@ -7,12 +7,12 @@ import serial
 from math import *
 
 sendDataFst = struct.Struct('!3B')
-recvDataBytes = 68
+recvDataBytes = 92
 # unsigned int--H;int--h;char--c;float--f;
-recvDataFst = struct.Struct('<H5h8fh2fhfhLH')
+recvDataFst = struct.Struct('<H5h14fh2fhfhLH')
 
-arduinoUrl = "socket://192.168.188.200:9000" # exp use
-# arduinoUrl = "COM14"  # serial test use
+# arduinoUrl = "socket://192.168.188.200:9000" # exp use
+arduinoUrl = "COM15"  # serial test use
 # arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
@@ -24,7 +24,7 @@ windOffset = 90
 
 pubUrls = ['motorMicroSec', 'rudderAng', 'sailAng', 'arduinoReadMark', 'autoFlag',  # control related
            'windAngRead', 'sailAngRead',  # encoder
-           'roll', 'pitch', 'yaw',  # ahrs
+           'roll', 'pitch', 'yaw', 'Gx', 'Gy', 'Gz', 'Ax', 'Ay', 'Az',  # ahrs
            'UTC', 'north', 'east', 'FS', 'Hacc', 'SOG', 'ageC', 'HDOP', 'SVs',  # gps
            'time']  # arduino time since program starting
 
@@ -140,11 +140,12 @@ def to180(data):
 def pubToVeristand(dev, data):
     data[5] = to180(data[5] - windOffset)  # wind data
     data[6] = to180(data[6] - sailOffset)  # sail data
-    north, east = w84_calc_ne(data[11], data[12])  # lat lon
+    north, east = w84_calc_ne(data[17], data[18])  # lat lon
     # print north, east
-    data[11] = north
-    data[12] = east
+    data[17] = north
+    data[18] = east
     for i in xrange(len(pubUrls)):
+        # print pubUrls[i], data[i]
         dev.pub_set1(pubUrls[i], data[i])
 
 

@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.28</String>
+				<String>1.0.0.29</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -351,6 +351,12 @@ Values
 												<Elem>ageC</Elem>
 												<Elem>Hacc</Elem>
 												<Elem>ArduinoTime</Elem>
+												<Elem>Gx</Elem>
+												<Elem>Gy</Elem>
+												<Elem>Gz</Elem>
+												<Elem>Ax</Elem>
+												<Elem>Ay</Elem>
+												<Elem>Az</Elem>
 											</StringArray>
 										</Property>
 										<Property Name="user.CD.Log Channel  1">
@@ -424,6 +430,24 @@ Values
 										</Property>
 										<Property Name="user.CD.Log Channel  24">
 											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/ArduinoTime" />
+										</Property>
+										<Property Name="user.CD.Log Channel  25">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Gx" />
+										</Property>
+										<Property Name="user.CD.Log Channel  26">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Gy" />
+										</Property>
+										<Property Name="user.CD.Log Channel  27">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Gz" />
+										</Property>
+										<Property Name="user.CD.Log Channel  28">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Ax" />
+										</Property>
+										<Property Name="user.CD.Log Channel  29">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Ay" />
+										</Property>
+										<Property Name="user.CD.Log Channel  30">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatSub/Outports/Az" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -864,7 +888,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ERROR_STATUS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>20</I32>
+											<I32>26</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -969,7 +993,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>north</String>
 										</Property>
 										<Property Name="Index">
-											<I32>11</I32>
+											<I32>17</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -984,7 +1008,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>east</String>
 										</Property>
 										<Property Name="Index">
-											<I32>12</I32>
+											<I32>18</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -999,7 +1023,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>FS</String>
 										</Property>
 										<Property Name="Index">
-											<I32>13</I32>
+											<I32>19</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1014,7 +1038,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>SVs</String>
 										</Property>
 										<Property Name="Index">
-											<I32>14</I32>
+											<I32>20</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1029,7 +1053,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>HDOP</String>
 										</Property>
 										<Property Name="Index">
-											<I32>15</I32>
+											<I32>21</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1044,7 +1068,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>SOG</String>
 										</Property>
 										<Property Name="Index">
-											<I32>16</I32>
+											<I32>22</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1074,7 +1098,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>UTC</String>
 										</Property>
 										<Property Name="Index">
-											<I32>10</I32>
+											<I32>16</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1089,7 +1113,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ageC</String>
 										</Property>
 										<Property Name="Index">
-											<I32>17</I32>
+											<I32>23</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1104,7 +1128,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>Hacc</String>
 										</Property>
 										<Property Name="Index">
-											<I32>18</I32>
+											<I32>24</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1119,7 +1143,97 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 											<String>ArduinoTime</String>
 										</Property>
 										<Property Name="Index">
-											<I32>19</I32>
+											<I32>25</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Gx" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Gx</String>
+										</Property>
+										<Property Name="Index">
+											<I32>10</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Gy" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Gy</String>
+										</Property>
+										<Property Name="Index">
+											<I32>11</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Gz" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Gz</String>
+										</Property>
+										<Property Name="Index">
+											<I32>12</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Ax" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Ax</String>
+										</Property>
+										<Property Name="Index">
+											<I32>13</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Ay" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Ay</String>
+										</Property>
+										<Property Name="Index">
+											<I32>14</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Az" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Az</String>
+										</Property>
+										<Property Name="Index">
+											<I32>15</I32>
 										</Property>
 									</Properties>
 									<Errors />
