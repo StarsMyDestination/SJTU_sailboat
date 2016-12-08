@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.29</String>
+				<String>1.0.0.33</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -786,6 +786,9 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										<Data>AAAAFBEAgAgAAAABAAQAAAABAAAAAAAA</Data>
 									</Variant>
 								</Property>
+								<Property Name="Group">
+									<I32>0</I32>
+								</Property>
 							</Properties>
 							<Errors />
 							<Section Name="Execution" TypeGUID="03D3BA9F-1485-13A6-56E3D5196780015F">
@@ -1246,6 +1249,617 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 								<Description />
 								<Properties />
 								<Errors />
+							</Section>
+							<Section Name="Signals" TypeGUID="03D3BA31-1485-13A6-567CA69E9D2E71D5">
+								<Description />
+								<Properties />
+								<Errors />
+							</Section>
+						</Section>
+						<Section Name="GPS_IMU_KF" TypeGUID="03D3B9C4-1485-13A6-561FC9BB21813875">
+							<Description />
+							<Properties>
+								<Property Name="Base Rate">
+									<Double>100000</Double>
+								</Property>
+								<Property Name="DLL Size">
+									<I32>177152</I32>
+								</Property>
+								<Property Name="DLL Timestamp">
+									<Double>3564057851</Double>
+								</Property>
+								<Property Name="Decimation">
+									<I32>1</I32>
+								</Property>
+								<Property Name="Import Definition ID">
+									<I32>0</I32>
+								</Property>
+								<Property Name="ID">
+									<I32>0</I32>
+								</Property>
+								<Property Name="Model Timestamp">
+									<Double>0</Double>
+								</Property>
+								<Property Name="Processor">
+									<I32>-2</I32>
+								</Property>
+								<Property Name="Show Unnamed Signals">
+									<Boolean>false</Boolean>
+								</Property>
+								<Property Name="User Rate">
+									<Double>100000</Double>
+								</Property>
+								<Property Name="visible">
+									<U32>0</U32>
+								</Property>
+								<Property Name="blocks only">
+									<Boolean>false</Boolean>
+								</Property>
+								<Property Name="Segment Vectors">
+									<Boolean>false</Boolean>
+								</Property>
+								<Property Name="MD5">
+									<String>9c2eab1dcc789a91d06d386d45b660b9</String>
+								</Property>
+								<Property Name="NIVeriStandServer Port">
+									<U32>6012</U32>
+								</Property>
+								<Property Name="DLL Path">
+									<DependentFile Type="Absolute" Path="C:\Users\建云\Documents\百度云同步盘\NewSailboat\GPS_IMU_KF\matlab_code\GPS_IMU_KF_niVeriStand_rtw\GPS_IMU_KF.dll">
+										<Version />
+										<ForceDownload>false</ForceDownload>
+										<RTDestination>c:\ni-rt\NIVeriStand\Models\GPS_IMU_KF.dll</RTDestination>
+										<SupportedTarget>PharLap &amp; Windows</SupportedTarget>
+										<MD5>9c2eab1dcc789a91d06d386d45b660b9</MD5>
+									</DependentFile>
+								</Property>
+								<Property Name="Model Path">
+									<DependentFile Type="Absolute" Path="">
+										<Version />
+										<RTDestination />
+										<SupportedTarget />
+										<MD5 />
+									</DependentFile>
+								</Property>
+								<Property Name="Build Data">
+									<Variant>
+										<Type>AAAACgAUQDD/////C2RhdGEgc3RyaW5n</Type>
+										<Data>AAAAFBEAgAgAAAABAAQAAAABAAAAAAAA</Data>
+									</Variant>
+								</Property>
+								<Property Name="Group">
+									<I32>0</I32>
+								</Property>
+							</Properties>
+							<Errors />
+							<Section Name="Execution" TypeGUID="03D3BA9F-1485-13A6-56E3D5196780015F">
+								<Description />
+								<Properties />
+								<Errors />
+								<Channel Name="Model Command" TypeGUID="03D3BABE-1485-13A6-56C34B877844B2C1" RowDim="1" ColDim="1" Units="" BitFields="3">
+									<Description>0: Start
+1: Pause
+2: Reset
+3: Save
+4: Restore</Description>
+									<Properties />
+									<Errors />
+									<DefaultValue>
+										<Elem>1</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Model Time" TypeGUID="03D3BAAE-1485-13A6-5606A77AB57A7FC9" RowDim="1" ColDim="1" Units="sec" BitFields="1">
+									<Description />
+									<Properties />
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Model Status" TypeGUID="03D3BB6A-1485-13A6-5643A7AFDA3A2658" RowDim="1" ColDim="1" Units="" BitFields="1">
+									<Description>0: Running
+1: Paused
+2: Resetting
+3: Idle
+4: Stopped
+5: Restoring
+6: Saving</Description>
+									<Properties />
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+							</Section>
+							<Section Name="Inports" TypeGUID="03D3B9E3-1485-13A6-56035B19B2245EB3">
+								<Description />
+								<Properties />
+								<Errors />
+								<Channel Name="p_x" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>p_x</String>
+										</Property>
+										<Property Name="Index">
+											<I32>0</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/north" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="p_y" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>p_y</String>
+										</Property>
+										<Property Name="Index">
+											<I32>1</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/east" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="FS" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>FS</String>
+										</Property>
+										<Property Name="Index">
+											<I32>2</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/FS" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="HDOP" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>HDOP</String>
+										</Property>
+										<Property Name="Index">
+											<I32>3</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/HDOP" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="roll" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>roll</String>
+										</Property>
+										<Property Name="Index">
+											<I32>4</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/roll" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="pitch" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>pitch</String>
+										</Property>
+										<Property Name="Index">
+											<I32>5</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/pitch" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="yaw" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>yaw</String>
+										</Property>
+										<Property Name="Index">
+											<I32>6</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/yaw" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_x" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_x</String>
+										</Property>
+										<Property Name="Index">
+											<I32>7</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/Ax" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_y" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_y</String>
+										</Property>
+										<Property Name="Index">
+											<I32>8</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/Ay" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_z" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_z</String>
+										</Property>
+										<Property Name="Index">
+											<I32>9</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/Az" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="Ard_T" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>Ard_T</String>
+										</Property>
+										<Property Name="Index">
+											<I32>10</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/ArduinoTime" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="UTC" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>UTC</String>
+										</Property>
+										<Property Name="Index">
+											<I32>11</I32>
+										</Property>
+										<Property Name="DataSource">
+											<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/boatSub/Outports/UTC" />
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+							</Section>
+							<Section Name="Outports" TypeGUID="03D3B9F3-1485-13A6-5698C14838D6AA3C">
+								<Description />
+								<Properties />
+								<Errors />
+								<Channel Name="p_x_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>p_x_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>0</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="p_y_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>p_y_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>1</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="p_z_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>p_z_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>2</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="v_x_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>v_x_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>3</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="v_y_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>v_y_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>4</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="v_z_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>v_z_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>5</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_x_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_x_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>6</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_y_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_y_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>7</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="a_z_f" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>a_z_f</String>
+										</Property>
+										<Property Name="Index">
+											<I32>8</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_diagonal" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="9" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_diagonal</String>
+										</Property>
+										<Property Name="Index">
+											<I32>9</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+							</Section>
+							<Section Name="Parameters" TypeGUID="03D3BB0C-1485-13A6-56E10CEFF755E7D3">
+								<Description />
+								<Properties />
+								<Errors />
+								<Channel Name="kf_Q" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="1" ColDim="1" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/Q/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/Q/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>1</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0.01</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="kf_R_GPS" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/R_GPS/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/R_GPS/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>2</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>4</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>4</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>4</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="kf_R_IMU" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/R_IMU/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/R_IMU/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>3</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0.01</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0.01</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0.01</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="pos_xy_init" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="2" ColDim="1" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/pos_xy_init/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/pos_xy_init/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>4</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
 							</Section>
 							<Section Name="Signals" TypeGUID="03D3BA31-1485-13A6-567CA69E9D2E71D5">
 								<Description />
