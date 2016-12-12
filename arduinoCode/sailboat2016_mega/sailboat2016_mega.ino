@@ -53,7 +53,6 @@ struct //total 2+10+8+36+30+4+2=92 bytes
   float windAngRead;  //4
   float sailAngRead;  //4
 
-
   //AHRS data EulerAngle GyroAngleVel Accel (total 36 bytes)
   float roll;   //4
   float pitch;  //4

@@ -10,7 +10,7 @@
 				<String>boat_ver1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.33</String>
+				<String>1.0.0.40</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -489,6 +489,171 @@ Values
 										</Property>
 										<Property Name="user.CD.Log Channel  7">
 											<DependentNode Path="Targets/Controller/Simulation Models/Models/boatPub/Outports/ERROR_STATUS" />
+										</Property>
+									</Properties>
+									<Errors />
+								</Section>
+								<Section Name="GPS_IMU_KF" TypeGUID="6f0afb90-3eee-463c-9817-5273ea7ccf5e">
+									<Description />
+									<Properties>
+										<Property Name="user.CD.Decimation">
+											<I32>1</I32>
+										</Property>
+										<Property Name="user.CD.Log Channel Names">
+											<StringArray>
+												<Elem>Model Command</Elem>
+												<Elem>Model Time</Elem>
+												<Elem>Model Status</Elem>
+												<Elem>p_x</Elem>
+												<Elem>p_y</Elem>
+												<Elem>FS</Elem>
+												<Elem>HDOP</Elem>
+												<Elem>roll</Elem>
+												<Elem>pitch</Elem>
+												<Elem>yaw</Elem>
+												<Elem>a_x</Elem>
+												<Elem>a_y</Elem>
+												<Elem>a_z</Elem>
+												<Elem>Ard_T</Elem>
+												<Elem>UTC</Elem>
+												<Elem>p_x_f</Elem>
+												<Elem>p_y_f</Elem>
+												<Elem>p_z_f</Elem>
+												<Elem>v_x_f</Elem>
+												<Elem>v_y_f</Elem>
+												<Elem>v_z_f</Elem>
+												<Elem>a_x_f</Elem>
+												<Elem>a_y_f</Elem>
+												<Elem>a_z_f</Elem>
+												<Elem>KF_R_GPS</Elem>
+												<Elem>KF_Q</Elem>
+												<Elem>pos_xy_init</Elem>
+												<Elem>KF_R_IMU</Elem>
+												<Elem>P_11</Elem>
+												<Elem>P_22</Elem>
+												<Elem>P_33</Elem>
+												<Elem>P_44</Elem>
+												<Elem>P_55</Elem>
+												<Elem>P_66</Elem>
+												<Elem>P_77</Elem>
+												<Elem>P_88</Elem>
+												<Elem>P_99</Elem>
+												<Elem>P</Elem>
+											</StringArray>
+										</Property>
+										<Property Name="user.CD.Log Channel  1">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Execution/Model Command" />
+										</Property>
+										<Property Name="user.CD.Log Channel  2">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Execution/Model Time" />
+										</Property>
+										<Property Name="user.CD.Log Channel  3">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Execution/Model Status" />
+										</Property>
+										<Property Name="user.CD.Log Channel  4">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/p_x" />
+										</Property>
+										<Property Name="user.CD.Log Channel  5">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/p_y" />
+										</Property>
+										<Property Name="user.CD.Log Channel  6">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/FS" />
+										</Property>
+										<Property Name="user.CD.Log Channel  7">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/HDOP" />
+										</Property>
+										<Property Name="user.CD.Log Channel  8">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/roll" />
+										</Property>
+										<Property Name="user.CD.Log Channel  9">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/pitch" />
+										</Property>
+										<Property Name="user.CD.Log Channel  10">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/yaw" />
+										</Property>
+										<Property Name="user.CD.Log Channel  11">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/a_x" />
+										</Property>
+										<Property Name="user.CD.Log Channel  12">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/a_y" />
+										</Property>
+										<Property Name="user.CD.Log Channel  13">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/a_z" />
+										</Property>
+										<Property Name="user.CD.Log Channel  14">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/Ard_T" />
+										</Property>
+										<Property Name="user.CD.Log Channel  15">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Inports/UTC" />
+										</Property>
+										<Property Name="user.CD.Log Channel  16">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/p_x_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  17">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/p_y_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  18">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/p_z_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  19">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/v_x_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  20">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/v_y_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  21">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/v_z_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  22">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/a_x_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  23">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/a_y_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  24">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/a_z_f" />
+										</Property>
+										<Property Name="user.CD.Log Channel  25">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Parameters/KF_R_GPS" />
+										</Property>
+										<Property Name="user.CD.Log Channel  26">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Parameters/KF_Q" />
+										</Property>
+										<Property Name="user.CD.Log Channel  27">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Parameters/pos_xy_init" />
+										</Property>
+										<Property Name="user.CD.Log Channel  28">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Parameters/KF_R_IMU" />
+										</Property>
+										<Property Name="user.CD.Log Channel  29">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_11" />
+										</Property>
+										<Property Name="user.CD.Log Channel  30">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_22" />
+										</Property>
+										<Property Name="user.CD.Log Channel  31">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_33" />
+										</Property>
+										<Property Name="user.CD.Log Channel  32">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_44" />
+										</Property>
+										<Property Name="user.CD.Log Channel  33">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_55" />
+										</Property>
+										<Property Name="user.CD.Log Channel  34">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_66" />
+										</Property>
+										<Property Name="user.CD.Log Channel  35">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_77" />
+										</Property>
+										<Property Name="user.CD.Log Channel  36">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_88" />
+										</Property>
+										<Property Name="user.CD.Log Channel  37">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Outports/P_99" />
+										</Property>
+										<Property Name="user.CD.Log Channel  38">
+											<DependentNode Path="Targets/Controller/Simulation Models/Models/GPS_IMU_KF/Signals/P" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -1263,10 +1428,10 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 									<Double>100000</Double>
 								</Property>
 								<Property Name="DLL Size">
-									<I32>177152</I32>
+									<I32>178688</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3564057851</Double>
+									<Double>3564098064</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -1299,18 +1464,18 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 									<Boolean>false</Boolean>
 								</Property>
 								<Property Name="MD5">
-									<String>9c2eab1dcc789a91d06d386d45b660b9</String>
+									<String>b63ed3bdad46fa7d9b595f864f217357</String>
 								</Property>
 								<Property Name="NIVeriStandServer Port">
 									<U32>6012</U32>
 								</Property>
 								<Property Name="DLL Path">
-									<DependentFile Type="Absolute" Path="C:\Users\建云\Documents\百度云同步盘\NewSailboat\GPS_IMU_KF\matlab_code\GPS_IMU_KF_niVeriStand_rtw\GPS_IMU_KF.dll">
+									<DependentFile Type="Absolute" Path="C:\Users\建云\Documents\百度云同步盘\NewSailboat\sourceCode\matlabCode\GPS_IMU_FUSION_SIMULINK\GPS_IMU_KF_niVeriStand_rtw\GPS_IMU_KF.dll">
 										<Version />
 										<ForceDownload>false</ForceDownload>
 										<RTDestination>c:\ni-rt\NIVeriStand\Models\GPS_IMU_KF.dll</RTDestination>
 										<SupportedTarget>PharLap &amp; Windows</SupportedTarget>
-										<MD5>9c2eab1dcc789a91d06d386d45b660b9</MD5>
+										<MD5>b63ed3bdad46fa7d9b595f864f217357</MD5>
 									</DependentFile>
 								</Property>
 								<Property Name="Model Path">
@@ -1326,9 +1491,6 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										<Type>AAAACgAUQDD/////C2RhdGEgc3RyaW5n</Type>
 										<Data>AAAAFBEAgAgAAAABAAQAAAABAAAAAAAA</Data>
 									</Variant>
-								</Property>
-								<Property Name="Group">
-									<I32>0</I32>
 								</Property>
 							</Properties>
 							<Errors />
@@ -1731,11 +1893,11 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										<Elem>0</Elem>
 									</DefaultValue>
 								</Channel>
-								<Channel Name="P_diagonal" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="9" Units="" BitFields="5">
+								<Channel Name="P_11" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
 									<Description />
 									<Properties>
 										<Property Name="Model Path">
-											<String>P_diagonal</String>
+											<String>P_11</String>
 										</Property>
 										<Property Name="Index">
 											<I32>9</I32>
@@ -1744,13 +1906,125 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 									<Errors />
 									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_22" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_22</String>
+										</Property>
+										<Property Name="Index">
+											<I32>10</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_33" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_33</String>
+										</Property>
+										<Property Name="Index">
+											<I32>11</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_44" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_44</String>
+										</Property>
+										<Property Name="Index">
+											<I32>12</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_55" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_55</String>
+										</Property>
+										<Property Name="Index">
+											<I32>13</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_66" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_66</String>
+										</Property>
+										<Property Name="Index">
+											<I32>14</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_77" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_77</String>
+										</Property>
+										<Property Name="Index">
+											<I32>15</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_88" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_88</String>
+										</Property>
+										<Property Name="Index">
+											<I32>16</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="P_99" TypeGUID="03D3B995-1485-13A6-56ABA0860ADF91DF" RowDim="1" ColDim="1" Units="" BitFields="5">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>P_99</String>
+										</Property>
+										<Property Name="Index">
+											<I32>17</I32>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
 										<Elem>0</Elem>
 									</DefaultValue>
 								</Channel>
@@ -1759,28 +2033,7 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 								<Description />
 								<Properties />
 								<Errors />
-								<Channel Name="kf_Q" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="1" ColDim="1" Units="" BitFields="1">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>gps_imu_kf/Q/Value</String>
-										</Property>
-										<Property Name="Expression">
-											<String>GPS_IMU_KF/Q/Value</String>
-										</Property>
-										<Property Name="Parameter Index">
-											<I32>1</I32>
-										</Property>
-										<Property Name="Added">
-											<Boolean>true</Boolean>
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0.01</Elem>
-									</DefaultValue>
-								</Channel>
-								<Channel Name="kf_R_GPS" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
+								<Channel Name="KF_R_GPS" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
 									<Description />
 									<Properties>
 										<Property Name="Model Path">
@@ -1809,7 +2062,50 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										<Elem>4</Elem>
 									</DefaultValue>
 								</Channel>
-								<Channel Name="kf_R_IMU" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
+								<Channel Name="KF_Q" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="1" ColDim="1" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/Q/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/Q/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>1</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0.01</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="pos_xy_init" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="2" ColDim="1" Units="" BitFields="1">
+									<Description />
+									<Properties>
+										<Property Name="Model Path">
+											<String>gps_imu_kf/pos_xy_init/Value</String>
+										</Property>
+										<Property Name="Expression">
+											<String>GPS_IMU_KF/pos_xy_init/Value</String>
+										</Property>
+										<Property Name="Parameter Index">
+											<I32>4</I32>
+										</Property>
+										<Property Name="Added">
+											<Boolean>true</Boolean>
+										</Property>
+									</Properties>
+									<Errors />
+									<DefaultValue>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+									</DefaultValue>
+								</Channel>
+								<Channel Name="KF_R_IMU" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="3" ColDim="3" Units="" BitFields="1">
 									<Description />
 									<Properties>
 										<Property Name="Model Path">
@@ -1838,17 +2134,25 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 										<Elem>0.01</Elem>
 									</DefaultValue>
 								</Channel>
-								<Channel Name="pos_xy_init" TypeGUID="03D3B9A5-1485-13A6-56C6D6209A7E7998" RowDim="2" ColDim="1" Units="" BitFields="1">
+							</Section>
+							<Section Name="Signals" TypeGUID="03D3BA31-1485-13A6-567CA69E9D2E71D5">
+								<Description />
+								<Properties />
+								<Errors />
+								<Channel Name="P" TypeGUID="03D3B9B4-1485-13A6-568B54858FA75EDA" RowDim="9" ColDim="9" Units="" BitFields="1">
 									<Description />
 									<Properties>
+										<Property Name="Signal Index">
+											<I32>2</I32>
+										</Property>
 										<Property Name="Model Path">
-											<String>gps_imu_kf/pos_xy_init/Value</String>
+											<String>gps_imu_kf/MATLAB Function:2</String>
 										</Property>
-										<Property Name="Expression">
-											<String>GPS_IMU_KF/pos_xy_init/Value</String>
+										<Property Name="Path">
+											<String>gps_imu_kf/MATLAB Function/P</String>
 										</Property>
-										<Property Name="Parameter Index">
-											<I32>4</I32>
+										<Property Name="NoName?">
+											<Boolean>false</Boolean>
 										</Property>
 										<Property Name="Added">
 											<Boolean>true</Boolean>
@@ -1858,13 +2162,87 @@ Increase the FIFO Depth value for the Embedded Data Logger to avoid data loss.</
 									<DefaultValue>
 										<Elem>0</Elem>
 										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
+										<Elem>0</Elem>
 									</DefaultValue>
 								</Channel>
-							</Section>
-							<Section Name="Signals" TypeGUID="03D3BA31-1485-13A6-567CA69E9D2E71D5">
-								<Description />
-								<Properties />
-								<Errors />
 							</Section>
 						</Section>
 					</Section>
