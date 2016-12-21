@@ -12,7 +12,7 @@ recvDataBytes = 92
 recvDataFst = struct.Struct('<H5h14fh2fhfhLH')
 
 arduinoUrl = "socket://192.168.188.200:9000" # exp use
-# arduinoUrl = "COM14"  # serial test use
+# arduinoUrl = "COM9"  # serial test use
 # arduinoUrl = "socket://192.168.199.101:9000"  # lab test use
 
 msgSubConnect = 'tcp://127.0.0.1:5555'
